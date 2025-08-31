@@ -139,7 +139,7 @@ def live_market_tracker():
         st.warning("لا يمكن عرض بيانات السوق حالياً. يرجى المحاولة لاحقاً.")
 
 def render_main_app():
-    st.set_page_config(layout="wide")
+    
     
     # ... (CSS يبقى كما هو)
     st.markdown("""<style>...</style>""", unsafe_allow_html=True)
