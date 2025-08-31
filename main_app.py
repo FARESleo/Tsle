@@ -7,7 +7,7 @@ import requests # <-- المكتبة الأساسية للاتصال بالـ Ba
 
 # --- إعدادات الاتصال بالـ Backend ---
 # !!! هام جداً: استبدل هذا الرابط بالرابط العام لمشروعك على Replit
-BACKEND_URL = https://b6697ea5-cb9e-4031-abde-ec9d90eb52d0-00-c61ufn0y915m.worf.replit.dev/
+BACKEND_URL = "https://b6697ea5-cb9e-4031-abde-ec9d90eb52d0-00-c61ufn0y915m.worf.replit.dev"
 
 # ------------------------------------------------------------
 # دوال مساعدة للتواصل مع الـ Backend API
