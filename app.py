@@ -11,31 +11,10 @@ st.set_page_config(
 if 'show_welcome_page' not in st.session_state:
     st.session_state.show_welcome_page = True
 
-# --- CSS بسيط جداً ومستقر ---
-# هذا الكود مسؤول فقط عن الخلفية وإخفاء العناصر غير المرغوب فيها
+# --- CSS بسيط ومستقر ---
 if st.session_state.show_welcome_page:
-    css = """
-        <style>
-        /* إخفاء الشريط العلوي والسفلي */
-        header, footer { visibility: hidden; }
-        
-        /* خلفية داكنة وأنيقة */
-        .stApp {
-            background-color: #0a0a0f;
-        }
-        
-        /* إزالة المسافات البيضاء الزائدة في أعلى وأسفل الصفحة */
-        .block-container {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
-        
-        /* لتوسيط الصور داخل الأعمدة */
-        div[data-testid="stHorizontalBlock"] {
-            align-items: center;
-        }
-        </style>
-    """
+    # CSS لصفحة الترحيب يتم حقنه من welcome_page.py مباشرة
+    pass  # لا حاجة لأي CSS هنا بعد الآن
 else:
     # --- CSS العادي للصفحة الرئيسية ---
     background_url = "https://i.imgur.com/Utvjk6E.png"
@@ -50,8 +29,7 @@ else:
         }}
         </style>
     """
-
-st.markdown(css, unsafe_allow_html=True)
+    st.markdown(css, unsafe_allow_html=True)
 
 # عرض الصفحة المناسبة
 if st.session_state.show_welcome_page:
