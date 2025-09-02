@@ -3,26 +3,34 @@ import streamlit as st
 def render_welcome_page():
     
     st.markdown("""
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+
         <div class="floating-icons">
-            <img class="icon1" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/2048px-Bitcoin.svg.png">
-            <img class="icon2" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ethereum-icon-purple.svg/512px-Ethereum-icon-purple.svg.png">
-            <img class="icon3" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Binance_logo.svg/1920px-Binance_logo.svg.png">
-            <img class="icon4" src="https://seeklogo.com/images/S/solana-sol-logo-D28EE9766C-seeklogo.com.png">
-            <img class="icon5" src="https://upload.wikimedia.org/wikipedia/en/d/d0/Dogecoin_Logo.png">
-            <img class="icon6" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Tether_Logo.png/1200px-Tether_Logo.png">
-            <img class="icon7" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/XRP_Logo.svg/1200px-XRP_Logo.svg.png">
-            <img class="icon8" src="https://upload.wikimedia.org/wikipedia/e/e3/Cardano-Logo.png">
+            <img class="icon1" src="https://www.svgrepo.com/show/303423/bitcoin-btc-logo.svg">
+            <img class="icon2" src="https://www.svgrepo.com/show/303388/ethereum-eth-logo.svg">
+            <img class="icon3" src="https://www.svgrepo.com/show/303414/binance-coin-bnb-logo.svg">
+            <img class="icon4" src="https://www.svgrepo.com/show/428678/solana-sol.svg">
+            <img class="icon5" src="https://www.svgrepo.com/show/303683/dogecoin-doge-logo.svg">
+            <img class="icon6" src="https://www.svgrepo.com/show/303509/tether-usdt-logo.svg">
+            <img class="icon7" src="https://www.svgrepo.com/show/303632/xrp-xrp-logo.svg">
+            <img class="icon8" src="https://www.svgrepo.com/show/303442/cardano-ada-logo.svg">
+            <img class="icon9" src="https://www.svgrepo.com/show/303496/chainlink-link-logo.svg">
+            <img class="icon10" src="https://www.svgrepo.com/show/303601/uniswap-uni-logo.svg">
+            <img class="icon11" src="https://www.svgrepo.com/show/303487/litecoin-ltc-logo.svg">
+            <img class="icon12" src="https://www.svgrepo.com/show/303565/polkadot-new-dot-logo.svg">
         </div>
 
         <div class="welcome-container">
-            <h1 class="glowing-title">الماسح الذكي</h1>
-            <p style="font-size: 1.5rem; font-weight: bold; color: white; text-shadow: 1px 1px 2px #000000;">
-                تداول بذكاء! 🧠
+            <h1 class="glowing-title">Signal Prime</h1>
+            <p style="font-size: 1.5rem; font-weight: bold; color: #cccccc; text-shadow: 1px 1px 2px #000000;">
+                Where Data Meets Decision.
             </p>
+            <div style="margin-top: 40px;"></div>
         </div>
     """, unsafe_allow_html=True)
 
-    # وضع الزر خارج الـ markdown لضمان عمله
-    if st.button("🚀 ابدأ الآن!", use_container_width=True, key="start_button_final"):
+    # وضع الزر خارج الـ markdown لضمان عمله وتطبيق التصميم الجديد
+    if st.button("🚀 Launch Scanner", use_container_width=False, key="launch_button"):
         st.session_state.show_welcome_page = False
         st.rerun()
