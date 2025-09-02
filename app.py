@@ -11,78 +11,60 @@ st.set_page_config(
 if 'show_welcome_page' not in st.session_state:
     st.session_state.show_welcome_page = True
 
-# --- CSS مركزي ومبسط لصفحة الترحيب ---
+# --- CSS مركزي ومحسن ---
 if st.session_state.show_welcome_page:
+    # --- تصميم أنيق ومستقر لصفحة الترحيب ---
     css = """
         <style>
-        /* إخفاء العناصر الافتراضية لـ Streamlit */
         header, footer { visibility: hidden; }
 
-        /* خلفية متدرجة داكنة وأنيقة للصفحة الأولى */
         .stApp {
-            background: linear-gradient(135deg, #0a0a0f, #1a1a2e, #0a0a0f);
-            background-size: cover;
+            background: radial-gradient(circle at center, #1a1a2e, #0a0a0f);
             height: 100vh;
-            overflow: hidden; /* لمنع أي تمرير غير مرغوب فيه */
+            overflow: hidden; /* منع التمرير نهائياً */
         }
 
-        /* حاوية المحتوى لتوسيعه وتوسيطه */
         .welcome-container {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* تملأ كامل الارتفاع */
+            height: 100vh;
             text-align: center;
-            position: relative;
-            z-index: 2; /* لضمان ظهور المحتوى فوق الخلفية */
-            padding: 20px; /* لإضافة بعض الهوامش */
-            box-sizing: border-box; /* لضمان أن البادينج لا يزيد عن حجم الـ div */
         }
 
-        /* تصميم العنوان الرئيسي المتوهج */
         .glowing-title {
             font-size: 4.5rem;
             color: #fff;
-            animation: glow 1.5s ease-in-out infinite alternate;
-            margin-bottom: 0.5rem; /* مسافة أسفل العنوان */
-        }
-        
-        @keyframes glow {
-            from { text-shadow: 0 0 10px #fff, 0 0 20px #007bff, 0 0 30px #007bff; }
-            to { text-shadow: 0 0 20px #fff, 0 0 35px #4da8ff, 0 0 45px #4da8ff; }
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #fff, 0 0 20px #007bff, 0 0 30px #007bff;
         }
 
-        /* تصميم النص التحفيزي */
         .welcome-subtitle {
             font-size: 1.5rem;
-            font-weight: bold;
             color: #cccccc;
-            text-shadow: 1px 1px 2px #000000;
-            margin-bottom: 3rem; /* مسافة أسفل النص التحفيزي */
+            margin-bottom: 3rem;
+            text-shadow: 1px 1px 2px #000;
         }
 
-        /* حاوية أيقونات العملات الرقمية */
-        .crypto-icons-grid {
+        .crypto-icons-row {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap; /* للسماح للأيقونات بالانتقال إلى سطر جديد */
-            gap: 20px; /* مسافة بين الأيقونات */
-            margin-bottom: 4rem; /* مسافة أسفل شبكة الأيقونات */
-            max-width: 90%; /* لتحديد عرض الشبكة */
+            gap: 25px; /* مسافة بين الأيقونات */
+            margin-bottom: 4rem;
         }
 
-        .crypto-icons-grid img {
-            width: 60px; /* حجم الأيقونات */
-            height: 60px;
-            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.7)); /* توهج أزرق */
-            transition: transform 0.3s ease-in-out; /* حركة ناعمة عند التمرير */
-        }
-        .crypto-icons-grid img:hover {
-            transform: scale(1.2); /* تكبير عند التمرير */
+        .crypto-icons-row img {
+            width: 55px;
+            height: 55px;
+            filter: drop-shadow(0 0 10px rgba(0, 123, 255, 0.6));
+            transition: transform 0.3s ease;
         }
 
-        /* تصميم زر البدء الاحترافي */
+        .crypto-icons-row img:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+
         .stButton>button {
             border: 2px solid #007bff;
             border-radius: 50px;
@@ -92,19 +74,17 @@ if st.session_state.show_welcome_page:
             color: white;
             background: transparent;
             transition: all 0.3s ease-in-out;
-            box-shadow: 0 0 15px #007bff, inset 0 0 15px #007bff;
-            cursor: pointer; /* لإظهار مؤشر اليد عند التمرير */
+            box-shadow: 0 0 15px #007bff;
         }
         .stButton>button:hover {
             background: #007bff;
-            color: white;
-            box-shadow: 0 0 25px #007bff, inset 0 0 25px #007bff;
+            box-shadow: 0 0 25px #007bff;
             transform: scale(1.05);
         }
         </style>
     """
 else:
-    # --- CSS العادي للصفحة الرئيسية (كما هو) ---
+    # --- CSS العادي للصفحة الرئيسية ---
     background_url = "https://i.imgur.com/Utvjk6E.png"
     css = f"""
         <style>
