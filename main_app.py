@@ -1,4 +1,4 @@
-# main_app.py (النسخة النهائية بدون المتتبع)
+# main_app.py (النسخة النهائية الصحيحة)
 import streamlit as st
 import pandas as pd
 from math import isnan
@@ -101,9 +101,27 @@ def trading_calculator_app():
                 st.metric("نسبة الربح مقابل المخاطرة (R:R)", f"{rr_ratio:.2f}x")
 
 def render_main_app():
+    # كود التصميم الأصلي الخاص بك
     st.markdown("""
         <style>
-        /* ... CSS code remains the same ... */
+        .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
+        .card-header { font-size: 14px; color: #bbb; margin-bottom: 5px; }
+        .card-value { font-size: 24px; font-weight: bold; color: white; }
+        .progress-bar-container { background-color: #333; border-radius: 5px; height: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; transition: width 0.5s ease-in-out; }
+        .trade-plan-card { background-color: #1e1e1e; border-radius: 10px; padding: 20px; border: 1px solid #333; margin-top: 20px; }
+        .trade-plan-title { font-size: 20px; font-weight: bold; color: #007bff; margin-bottom: 15px; text-align: center; }
+        .trade-plan-metric { margin-bottom: 15px; }
+        .trade-plan-metric-label { font-size: 16px; color: #999; margin-bottom: 5px; }
+        .trade-plan-metric-value { font-size: 20px; font-weight: bold; color: white; }
+        .reason-card { background-color: #2a2a2a; border-radius: 8px; padding: 15px; border-left: 5px solid; margin-bottom: 20px; }
+        .reason-card.bullish { border-color: #28a745; }
+        .reason-card.bearish { border-color: #dc3545; }
+        .reason-card.neutral { border-color: #ffc107; }
+        .reason-text { font-size: 18px; color: white; }
+        .stButton>button { border-radius: 50px; background-image: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; border: none; }
+        .stButton>button:hover { background-image: linear-gradient(to right, #0056b3, #007bff); }
+        .stMetric { background-color: #1e1e1e; border-radius: 10px; padding: 10px; text-align: center; }
         </style>
         """, unsafe_allow_html=True)
     
@@ -122,13 +140,11 @@ def render_main_app():
     st.markdown(f"**آخر تحديث:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     st.markdown("---")
     
-    # --- (هذا هو التعديل المهم) ---
+    # --- (تمت إزالة "المتتبع" من هنا) ---
     selected_page = st.radio("Go to", ["📊 التحليل", "🧮 الحاسبة"], horizontal=True, label_visibility="collapsed")
 
     if selected_page == "📊 التحليل":
-        # ... (code for analysis page remains the same) ...
         all_instruments = get_instruments_from_backend()
-        
         if not all_instruments:
             st.error("فشل في تحميل قائمة العملات. تأكد من أن الخادم الخلفي (Backend) يعمل.")
             st.stop()
@@ -160,15 +176,19 @@ def render_main_app():
                 if pct <= 40: return "red"
                 if pct <= 60: return "orange"
                 return "green"
+
             confidence_pct = result.get('confidence_pct', 50.0)
             confidence_color = get_confidence_color(confidence_pct)
             progress_width = confidence_pct if pd.notna(confidence_pct) else 0
+
             rec_emoji = "⏳"
             if result.get('recommendation') == "LONG": rec_emoji = "🚀"
             elif result.get('recommendation') == "SHORT": rec_emoji = "🔻"
+
             if pd.notna(confidence_pct):
                 if confidence_pct >= 75: st.success("🎉 إشارة قوية تم اكتشافها!", icon="🔥")
                 elif confidence_pct <= 25: st.warning("⚠️ إشارة ضعيفة. يفضل توخي الحذر.")
+
             cols = st.columns(3)
             with cols[0]:
                 st.markdown(f"""<div class="custom-card"><div class="card-header">📊 الثقة</div><div class="card-value">{confidence_pct:.1f}%</div><div class="progress-bar-container"><div class="progress-bar" style="width:{progress_width}%; background-color:{confidence_color};"></div></div></div>""", unsafe_allow_html=True)
@@ -176,15 +196,18 @@ def render_main_app():
                 st.markdown(f"""<div class="custom-card"><div class="card-header">⭐ التوصية</div><div class="card-value">{rec_emoji} {result.get('recommendation', 'N/A')}</div><div style="font-size: 14px; color: #999;">({result.get('strength', 'N/A')})</div></div>""", unsafe_allow_html=True)
             with cols[2]:
                 st.markdown(f"""<div class="custom-card"><div class="card-header">📈 سعر الدخول</div><div class="card-value">{format_price(result.get('entry'))}</div></div>""", unsafe_allow_html=True)
+
             st.markdown("---")
             reason_text = result.get('reason', 'N/A')
             reason_class = "neutral"
             if "صعودية" in reason_text: reason_class = "bullish"
             elif "هبوطية" in reason_text: reason_class = "bearish"
             st.markdown(f"""<div class="trade-plan-card"><div class="trade-plan-title">📝 خطة التداول</div><div class="reason-card {reason_class}"><div class="trade-plan-metric-label">السبب:</div><div class="reason-text">{reason_text}</div></div></div>""", unsafe_allow_html=True)
+            
             profit_pct, loss_pct = calculate_pnl_percentages(result.get('entry'), result.get('take_profit'), result.get('stop_loss'))
             profit_display = f"({profit_pct:.2f}%)" if profit_pct is not None else ""
             loss_display = f"({loss_pct:.2f}%)" if loss_pct is not None else ""
+            
             pnl_cols = st.columns([2, 1])
             with pnl_cols[0]:
                 est_time_display = result.get("est_time_to_target")
@@ -192,11 +215,13 @@ def render_main_app():
                 st.markdown(f"""<div class="trade-plan-metric"><div class="trade-plan-metric-label">🎯 السعر المستهدف:</div><div class="trade-plan-metric-value">{format_price(result.get('take_profit'))} <span style='font-size: 14px; color: green;'>{profit_display}</span>{time_html_element}</div></div><div class="trade-plan-metric"><div class="trade-plan-metric-label">🛑 وقف الخسارة:</div><div class="trade-plan-metric-value">{format_price(result.get('stop_loss'))} <span style='font-size: 14px; color: red;'>{loss_display}</span></div></div>""", unsafe_allow_html=True)
             with pnl_cols[1]:
                 st.markdown(f"""<div class="trade-plan-metric"><div class="trade-plan-metric-label">📈 سعر الدخول:</div><div class="trade-plan-metric-value">{format_price(result.get('entry'))}</div></div>""", unsafe_allow_html=True)
+
             st.markdown("---")
             st.markdown("### 📊 المقاييس الأساسية")
             metrics_data = result.get("metrics", {})
             weights_data = result.get("weights", {})
             icons = {"funding":"💰", "oi":"📊", "cvd":"📈", "orderbook":"⚖️", "backtest":"🧪", "ema_cross": "📈"}
+            
             available_metrics = {k:v for k,v in metrics_data.items() if v is not None}
             if available_metrics:
                 cols = st.columns(len(available_metrics))
@@ -208,6 +233,7 @@ def render_main_app():
                         st.metric(label=f"{icons.get(k, '⚙️')} {label_map.get(k, k.title())}", value=f"{score:.3f}", delta=weight_display)
             else:
                 st.info("لا توجد بيانات مقاييس لعرضها.")
+            
             st.markdown("---")
             st.markdown("### 🔍 تحليل إضافي")
             raw_data = result.get('raw', {})
