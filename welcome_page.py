@@ -26,7 +26,7 @@ def render_welcome_page():
             to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
         
-        /* (هذا هو الجزء الأهم) أحجام ومواقع وتأخيرات وسرعات مختلفة لكل أيقونة */
+        /* أحجام ومواقع وتأخيرات وسرعات مختلفة لكل أيقونة */
         .floating-icons img:nth-child(1) { left: 5%; width: 80px; animation-delay: 0s; }
         .floating-icons img:nth-child(2) { left: 15%; width: 40px; animation-delay: 5s; animation-duration: 30s; }
         .floating-icons img:nth-child(3) { left: 25%; width: 60px; animation-delay: 10s; }
@@ -35,13 +35,8 @@ def render_welcome_page():
         .floating-icons img:nth-child(6) { left: 75%; width: 70px; animation-delay: 8s; animation-duration: 35s; }
         .floating-icons img:nth-child(7) { left: 90%; width: 45px; animation-delay: 12s; }
         .floating-icons img:nth-child(8) { left: 80%; width: 65px; animation-delay: 18s; animation-duration: 22s; }
-        .floating-icons img:nth-child(9) { left: 30%; width: 55px; animation-delay: 20s; }
-        .floating-icons img:nth-child(10) { left: 70%; width: 85px; animation-delay: 25s; animation-duration: 18s; }
-        .floating-icons img:nth-child(11) { left: 10%; width: 40px; animation-delay: 30s; animation-duration: 40s; }
-        .floating-icons img:nth-child(12) { left: 50%; width: 70px; animation-delay: 3s; animation-duration: 25s; }
-
+        
         /* --- تصميم النصوص والزر --- */
-        /* (هذا هو التوهج الذي تريده) */
         @keyframes glow {
             from { text-shadow: 0 0 10px #fff, 0 0 20px #007bff, 0 0 30px #007bff; }
             to { text-shadow: 0 0 20px #fff, 0 0 35px #4da8ff, 0 0 45px #4da8ff; }
@@ -70,22 +65,10 @@ def render_welcome_page():
         </style>
 
         <div class="floating-icons">
-            <img src="https://www.svgrepo.com/show/303423/bitcoin-btc-logo.svg">
-            <img src="https://www.svgrepo.com/show/303388/ethereum-eth-logo.svg">
-            <img src="https://www.svgrepo.com/show/303414/binance-coin-bnb-logo.svg">
-            <img src="https://www.svgrepo.com/show/428678/solana-sol.svg">
-            <img src="https://www.svgrepo.com/show/303442/cardano-ada-logo.svg">
-            <img src="https://www.svgrepo.com/show/303632/xrp-xrp-logo.svg">
-            <img src="https://www.svgrepo.com/show/303565/polkadot-new-dot-logo.svg">
-            <img src="https://www.svgrepo.com/show/303683/dogecoin-doge-logo.svg">
-            <img src="https://www.svgrepo.com/show/303496/chainlink-link-logo.svg">
-            <img src="https://www.svgrepo.com/show/303601/uniswap-uni-logo.svg">
-            <img src="https://www.svgrepo.com/show/303487/litecoin-ltc-logo.svg">
-            <img src="https://www.svgrepo.com/show/303509/tether-usdt-logo.svg">
-        </div>
+            <img src="https://i.imgur.com/yGf37eD.png"> <img src="https://i.imgur.com/a4g22dD.png"> <img src="https://i.imgur.com/pdQr2xK.png"> <img src="https://i.imgur.com/AMi1s7f.png"> <img src="https://i.imgur.com/BSJcY2u.png"> <img src="https://i.imgur.com/VnOUjPa.png"> <img src="https://i.imgur.com/k28V1g4.png"> <img src="https://i.imgur.com/5w5cT62.png"> </div>
     """, unsafe_allow_html=True)
 
-    # --- استخدام مكونات Streamlit للتحكم في مكان المحتوى (هذا يحل مشكلة التمرير) ---
+    # --- استخدام مكونات Streamlit للتحكم في مكان المحتوى (لا تغيير هنا) ---
     for _ in range(7):
         st.write("") # مسافات فارغة من الأعلى
 
