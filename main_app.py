@@ -50,13 +50,12 @@ def get_market_data_from_backend():
 def get_analysis_from_backend(instId, bar):
     """
     يرسل طلب تحليل إلى الـ Backend ويستلم النتيجة.
-    لا نستخدم الكاش هنا لأننا نريد تحليلًا جديدًا في كل مرة نضغط فيها على الزر.
     """
     try:
         api_endpoint = f"{BACKEND_URL}/analyze"
         params = {"instId": instId, "bar": bar}
         response = requests.get(api_endpoint, params=params, timeout=120) # مهلة طويلة للتحليل
-        response.raise_for_status() # سيؤدي إلى خطأ إذا كانت الاستجابة 4xx or 5xx
+        response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
         error_message = f"فشل الاتصال بخادم التحليل: {e}"
@@ -88,7 +87,6 @@ def calculate_pnl_percentages(entry_price, take_profit, stop_loss):
     return profit_pct, loss_pct
 
 def trading_calculator_app():
-    # ... (هذه الدالة تبقى كما هي بدون تغيير)
     st.header("🧮 حاسبة التداول")
     col1, col2 = st.columns(2)
     with col1:
@@ -127,7 +125,6 @@ def trading_calculator_app():
 
 def live_market_tracker():
     st.header("📊 متتبع السوق اللحظي")
-    # <-- تغيير: استدعاء الدالة الجديدة التي تتصل بالـ Backend
     df = get_market_data_from_backend()
     if not df.empty:
         st.dataframe(df.rename(columns={
@@ -139,9 +136,6 @@ def live_market_tracker():
         st.warning("لا يمكن عرض بيانات السوق حالياً. يرجى المحاولة لاحقاً.")
 
 def render_main_app():
-    # ... (CSS يبقى كما هو)
-    st.markdown("""<style>...</style>""", unsafe_allow_html=True)
-    
     if 'analysis_results' not in st.session_state: st.session_state.analysis_results = {}
     if 'last_instId' not in st.session_state: st.session_state.last_instId = ""
     if 'last_bar' not in st.session_state: st.session_state.last_bar = ""
@@ -153,7 +147,6 @@ def render_main_app():
     selected_page = st.radio("Go to", ["📊 التحليل", "🧮 الحاسبة", "📈 المتتبع"], horizontal=True, label_visibility="collapsed")
 
     if selected_page == "📊 التحليل":
-        # <-- تغيير: استدعاء الدالة الجديدة لجلب قائمة العملات من الـ Backend
         all_instruments = get_instruments_from_backend()
         
         if not all_instruments:
@@ -164,21 +157,17 @@ def render_main_app():
         timeframes = ["15m", "30m", "1H", "4H", "6H", "12H"]
         bar = st.selectbox("الإطار الزمني", timeframes, index=2)
 
-        # ... (منطق st.session_state يبقى كما هو)
-
         if st.button("🚀 ابدأ التحليل!", use_container_width=True):
             st.session_state.analysis_in_progress = True
             
         if st.session_state.get('analysis_in_progress', False):
             with st.spinner("...جارٍ الاتصال بالخادم وتنفيذ التحليل"):
-                # <-- تغيير جذري: استدعاء دالة واحدة فقط تتصل بالـ Backend
                 result = get_analysis_from_backend(selected_instId, bar)
                 st.session_state.analysis_results = result
                 st.session_state.analysis_in_progress = False
         
         result = st.session_state.analysis_results
 
-        # ... (باقي الكود الخاص بعرض النتائج يبقى كما هو تماماً)
         if not isinstance(result, dict) or not result:
             st.info("💡 الرجاء تحديد أداة وإطار زمني ثم الضغط على 'ابدأ التحليل!'")
         elif 'error' in result:
@@ -186,7 +175,6 @@ def render_main_app():
         elif 'recommendation' not in result:
              st.info("❌ لا توجد بيانات متاحة للعرض. الرجاء الضغط 'ابدأ التحليل!'")
         else:
-            # ... (كل الكود الخاص بعرض البطاقات والرسوم البيانية يبقى هنا)
             def get_confidence_color(pct):
                 if pct is None or isnan(pct): return "gray"
                 if pct <= 40: return "red"
@@ -223,35 +211,7 @@ def render_main_app():
                 time_html_element = f"<span style='font-size: 14px; color: #888; margin-left: 15px;'>⏱️ {est_time_display}</span>" if est_time_display else ""
                 st.markdown(f"""<div class="trade-plan-metric"><div class="trade-plan-metric-label">🎯 السعر المستهدف:</div><div class="trade-plan-metric-value">{format_price(result.get('take_profit'))} <span style='font-size: 14px; color: green;'>{profit_display}</span>{time_html_element}</div></div><div class="trade-plan-metric"><div class="trade-plan-metric-label">🛑 وقف الخسارة:</div><div class="trade-plan-metric-value">{format_price(result.get('stop_loss'))} <span style='font-size: 14px; color: red;'>{loss_display}</span></div></div>""", unsafe_allow_html=True)
             with pnl_cols[1]:
-                st.markdown("""
-    <style>
-    .stApp {
-        background-image: url("https://i.imgur.com/Utvjk6E.png");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        z-index: -1;
-    }
-    .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
-    .card-header { font-size: 14px; color: #bbb; margin-bottom: 5px; }
-    .card-value { font-size: 24px; font-weight: bold; color: white; }
-    .progress-bar-container { background-color: #333; border-radius: 5px; height: 10px; margin-top: 10px; overflow: hidden; }
-    .progress-bar { height: 100%; transition: width 0.5s ease-in-out; }
-    .trade-plan-card { background-color: #1e1e1e; border-radius: 10px; padding: 20px; border: 1px solid #333; margin-top: 20px; }
-    .trade-plan-title { font-size: 20px; font-weight: bold; color: #007bff; margin-bottom: 15px; text-align: center; }
-    .trade-plan-metric { margin-bottom: 15px; }
-    .trade-plan-metric-label { font-size: 16px; color: #999; margin-bottom: 5px; }
-    .trade-plan-metric-value { font-size: 20px; font-weight: bold; color: white; }
-    .reason-card { background-color: #2a2a2a; border-radius: 8px; padding: 15px; border-left: 5px solid; margin-bottom: 20px; }
-    .reason-card.bullish { border-color: #28a745; }
-    .reason-card.bearish { border-color: #dc3545; }
-    .reason-card.neutral { border-color: #ffc107; }
-    .reason-text { font-size: 18px; color: white; }
-    .stButton>button { border-radius: 50px; background-image: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; border: none; }
-    .stButton>button:hover { background-image: linear-gradient(to right, #0056b3, #007bff); }
-    .stMetric { background-color: #1e1e1e; border-radius: 10px; padding: 10px; text-align: center; }
-    </style>
-    """, unsafe_allow_html=True)
+                st.markdown(f"""<div class="trade-plan-metric"><div class="trade-plan-metric-label">📈 سعر الدخول:</div><div class="trade-plan-metric-value">{format_price(result.get('entry'))}</div></div>""", unsafe_allow_html=True)
             st.markdown("---")
             st.markdown("### 📊 المقاييس الأساسية")
             metrics_data = result.get("metrics", {})
@@ -283,4 +243,3 @@ def render_main_app():
 
 if __name__ == "__main__":
     render_main_app()
-
