@@ -1,31 +1,19 @@
 import streamlit as st
 
 def render_welcome_page():
-    # --- هذا الكود يحتوي على كل شيء: التصميم والمحتوى والأيقونات العائمة ---
+    # --- هذا الكود يحتوي على كل شيء: التصميم، المحتوى، والأيقونات العائمة ---
     st.markdown("""
         <style>
         /* إخفاء العناصر الافتراضية */
         header, footer { visibility: hidden; }
         .stApp {
             background-color: #0a0a0f; /* خلفية داكنة وأنيقة */
-            overflow: hidden; /* منع التمرير */
+            overflow: hidden; /* منع التمرير نهائياً */
         }
         
-        /* حاوية لتوسيط كل شيء في الصفحة */
-        .welcome-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            position: relative; /* مهم لترتيب الطبقات */
-            z-index: 2; /* اجعل المحتوى فوق الأيقونات */
-        }
-
         /* --- الأيقونات العائمة --- */
         .floating-icons {
-            position: absolute;
+            position: fixed; /* استخدم fixed بدلاً من absolute */
             top: 0;
             left: 0;
             width: 100%;
@@ -36,7 +24,7 @@ def render_welcome_page():
         .floating-icons img {
             position: absolute;
             bottom: -100px;
-            opacity: 0.1; /* شفافية خفيفة */
+            opacity: 0.15; /* زيادة الوضوح قليلاً */
             animation: float-up 20s infinite linear;
         }
         @keyframes float-up {
@@ -55,27 +43,19 @@ def render_welcome_page():
         .icon7 { width: 75px; left: 85%; animation-delay: 1s; animation-duration: 19s; }
         .icon8 { width: 55px; left: 95%; animation-delay: 10s; animation-duration: 26s; }
 
-        /* --- تصميم النصوص والزر --- */
-        .main-title {
-            font-size: 4.5rem;
-            color: #ffffff;
-            text-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
-        }
-        .subtitle {
-            font-size: 1.5rem;
-            color: #cccccc;
-            margin-top: -10px;
-            margin-bottom: 50px;
-        }
+        /* --- تصميم الزر --- */
         .stButton>button {
             border: 2px solid #007bff;
             border-radius: 50px;
             padding: 15px 40px;
             font-size: 1.3rem;
+            font-weight: bold;
             color: white;
             background: transparent;
             transition: all 0.3s ease-in-out;
             box-shadow: 0 0 15px #007bff;
+            position: relative; /* مهم ليعمل الزر فوق طبقة الأيقونات */
+            z-index: 2;
         }
         .stButton>button:hover {
             background: #007bff;
@@ -94,18 +74,20 @@ def render_welcome_page():
             <img class="icon7" src="https://cryptologos.cc/logos/polkadot-dot-logo.svg?v=025">
             <img class="icon8" src="https://cryptologos.cc/logos/dogecoin-doge-logo.svg?v=025">
         </div>
-
-        <div class="welcome-container">
-            <h1 class="main-title">SIGNAL PRIME</h1>
-            <p class="subtitle">Where Data Meets Decision.</p>
-        </div>
     """, unsafe_allow_html=True)
 
-    # وضع الزر في حاوية منفصلة لضمان عمله وتمركزه
-    with st.container():
-        # استخدام أعمدة لتوسيط الزر
-        _, center_col, _ = st.columns([1, 1, 1])
-        with center_col:
-            if st.button("🚀 Launch Scanner", use_container_width=True, key="launch_scanner_floating"):
-                st.session_state.show_welcome_page = False
-                st.rerun()
+    # --- استخدام مكونات Streamlit للتحكم في مكان المحتوى (هذا يحل مشكلة التمرير) ---
+    # مسافات فارغة من الأعلى لدفع المحتوى للأسفل
+    for _ in range(7):
+        st.write("")
+
+    # العنوان الرئيسي والنص التحفيزي
+    st.markdown("<h1 style='text-align: center; color: white; font-size: 4.5rem; text-shadow: 0 0 15px rgba(0, 123, 255, 0.7); position: relative; z-index: 2;'>SIGNAL PRIME</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #cccccc; font-size: 1.5rem; margin-top: -10px; margin-bottom: 50px; position: relative; z-index: 2;'>Where Data Meets Decision.</p>", unsafe_allow_html=True)
+
+    # استخدام أعمدة لتوسيط الزر
+    _, center_col, _ = st.columns([1, 1, 1])
+    with center_col:
+        if st.button("🚀 Launch Scanner", use_container_width=True, key="launch_scanner_final_final"):
+            st.session_state.show_welcome_page = False
+            st.rerun()
