@@ -11,45 +11,10 @@ st.set_page_config(
 if 'show_welcome_page' not in st.session_state:
     st.session_state.show_welcome_page = True
 
-# --- CSS مركزي ومحسن ---
+# --- CSS بسيط ومستقر ---
 if st.session_state.show_welcome_page:
-    # --- تصميم أنيق ومستقر لصفحة الترحيب ---
-    css = """
-        <style>
-        /* إخفاء العناصر الافتراضية */
-        header, footer { visibility: hidden; }
-
-        /* خلفية داكنة وأنيقة */
-        .stApp {
-            background-color: #0a0a0f;
-            overflow: hidden; /* منع التمرير نهائياً */
-        }
-        
-        /* إزالة المسافات الزائدة في أعلى الصفحة */
-        .block-container {
-            padding-top: 2rem;
-        }
-
-        /* تصميم الزر */
-        .stButton>button {
-            border: 2px solid #007bff;
-            border-radius: 50px;
-            padding: 10px 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: white;
-            background: transparent;
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 0 15px #007bff;
-        }
-        .stButton>button:hover {
-            background: #007bff;
-            box-shadow: 0 0 25px #007bff;
-            transform: scale(1.05);
-        }
-        </style>
-    """
-    st.markdown(css, unsafe_allow_html=True)
+    # لا حاجة لأي CSS هنا، كل التصميم موجود في welcome_page.py
+    pass
 else:
     # --- CSS العادي للصفحة الرئيسية ---
     background_url = "https://i.imgur.com/Utvjk6E.png"
