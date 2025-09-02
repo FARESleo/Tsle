@@ -14,24 +14,28 @@ if 'show_welcome_page' not in st.session_state:
     st.session_state.show_welcome_page = True
 
 # --- CSS مركزي ومحسّن ---
-# هذا هو الكود الجديد الذي يضمن عرض الخلفية بشكل أفضل
+# خصائص مشتركة للخلفية في كل الصفحات
 common_css = """
     /* إخفاء الشريط العلوي والسفلي */
     header, footer { visibility: hidden; }
 
     .stApp {
-        background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
 """
 
-# اختر رابط الخلفية بناءً على الصفحة الحالية
+# اختر رابط الخلفية وحجمها بناءً على الصفحة الحالية
 if st.session_state.show_welcome_page:
     background_url = "https://i.imgur.com/Ra9blqc.png"
+    # (هذا هو التعديل) استخدام contain لعرض الصورة كاملة دون قص (زوم)
+    background_size = "contain"
 else:
     background_url = "https://i.imgur.com/Utvjk6E.png"
+    # استخدام cover لملء الشاشة بالكامل في الصفحة الرئيسية
+    background_size = "cover"
+
 
 # تطبيق الـ CSS مع الخلفية المحددة
 st.markdown(f"""
@@ -39,6 +43,7 @@ st.markdown(f"""
     {common_css}
     .stApp {{
         background-image: url("{background_url}");
+        background-size: {background_size};
     }}
     </style>
     """, unsafe_allow_html=True)
