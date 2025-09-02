@@ -18,22 +18,27 @@ def render_welcome_page():
         }
         .floating-icons img {
             position: absolute;
-            bottom: -120px;
-            opacity: 0.15; /* زيادة الوضوح */
-            animation: float-up 20s infinite linear;
+            bottom: -150px; /* ابدأ من خارج الشاشة */
+            opacity: 0.2; /* زيادة الوضوح */
+            animation: float-up 25s infinite linear;
         }
         @keyframes float-up {
-            to { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+            to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
+        
         /* (هذا هو الجزء الأهم) أحجام ومواقع وتأخيرات وسرعات مختلفة لكل أيقونة */
-        .icon1 { width: 45px; left: 5%; animation-delay: 0s; animation-duration: 25s; }
-        .icon2 { width: 70px; left: 15%; animation-delay: 4s; animation-duration: 20s; }
-        .icon3 { width: 50px; left: 28%; animation-delay: 8s; animation-duration: 30s; }
-        .icon4 { width: 80px; left: 40%; animation-delay: 2s; animation-duration: 18s; }
-        .icon5 { width: 60px; left: 55%; animation-delay: 12s; animation-duration: 28s; }
-        .icon6 { width: 40px; left: 70%; animation-delay: 6s; animation-duration: 22s; }
-        .icon7 { width: 75px; left: 85%; animation-delay: 1s; animation-duration: 19s; }
-        .icon8 { width: 55px; left: 95%; animation-delay: 10s; animation-duration: 26s; }
+        .floating-icons img:nth-child(1) { left: 5%; width: 80px; animation-delay: 0s; }
+        .floating-icons img:nth-child(2) { left: 15%; width: 40px; animation-delay: 5s; animation-duration: 30s; }
+        .floating-icons img:nth-child(3) { left: 25%; width: 60px; animation-delay: 10s; }
+        .floating-icons img:nth-child(4) { left: 40%; width: 90px; animation-delay: 2s; animation-duration: 20s; }
+        .floating-icons img:nth-child(5) { left: 60%; width: 50px; animation-delay: 15s; }
+        .floating-icons img:nth-child(6) { left: 75%; width: 70px; animation-delay: 8s; animation-duration: 35s; }
+        .floating-icons img:nth-child(7) { left: 90%; width: 45px; animation-delay: 12s; }
+        .floating-icons img:nth-child(8) { left: 80%; width: 65px; animation-delay: 18s; animation-duration: 22s; }
+        .floating-icons img:nth-child(9) { left: 30%; width: 55px; animation-delay: 20s; }
+        .floating-icons img:nth-child(10) { left: 70%; width: 85px; animation-delay: 25s; animation-duration: 18s; }
+        .floating-icons img:nth-child(11) { left: 10%; width: 40px; animation-delay: 30s; animation-duration: 40s; }
+        .floating-icons img:nth-child(12) { left: 50%; width: 70px; animation-delay: 3s; animation-duration: 25s; }
 
         /* --- تصميم النصوص والزر --- */
         /* (هذا هو التوهج الذي تريده) */
@@ -65,14 +70,18 @@ def render_welcome_page():
         </style>
 
         <div class="floating-icons">
-            <img class="icon1" src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=025">
-            <img class="icon2" src="https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=025">
-            <img class="icon3" src="https://cryptologos.cc/logos/binance-coin-bnb-logo.svg?v=025">
-            <img class="icon4" src="https://cryptologos.cc/logos/solana-sol-logo.svg?v=025">
-            <img class="icon5" src="https://cryptologos.cc/logos/cardano-ada-logo.svg?v=025">
-            <img class="icon6" src="https://cryptologos.cc/logos/ripple-xrp-logo.svg?v=025">
-            <img class="icon7" src="https://cryptologos.cc/logos/polkadot-dot-logo.svg?v=025">
-            <img class="icon8" src="https://cryptologos.cc/logos/dogecoin-doge-logo.svg?v=025">
+            <img src="https://www.svgrepo.com/show/303423/bitcoin-btc-logo.svg">
+            <img src="https://www.svgrepo.com/show/303388/ethereum-eth-logo.svg">
+            <img src="https://www.svgrepo.com/show/303414/binance-coin-bnb-logo.svg">
+            <img src="https://www.svgrepo.com/show/428678/solana-sol.svg">
+            <img src="https://www.svgrepo.com/show/303442/cardano-ada-logo.svg">
+            <img src="https://www.svgrepo.com/show/303632/xrp-xrp-logo.svg">
+            <img src="https://www.svgrepo.com/show/303565/polkadot-new-dot-logo.svg">
+            <img src="https://www.svgrepo.com/show/303683/dogecoin-doge-logo.svg">
+            <img src="https://www.svgrepo.com/show/303496/chainlink-link-logo.svg">
+            <img src="https://www.svgrepo.com/show/303601/uniswap-uni-logo.svg">
+            <img src="https://www.svgrepo.com/show/303487/litecoin-ltc-logo.svg">
+            <img src="https://www.svgrepo.com/show/303509/tether-usdt-logo.svg">
         </div>
     """, unsafe_allow_html=True)
 
