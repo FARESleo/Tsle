@@ -26,7 +26,7 @@ def render_welcome_page():
             to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
         
-        /* أحجام ومواقع وتأخيرات وسرعات مختلفة لكل أيقونة */
+        /* (هذا هو الجزء الأهم) أحجام ومواقع وتأخيرات وسرعات مختلفة لكل أيقونة */
         .floating-icons img:nth-child(1) { left: 5%; width: 80px; animation-delay: 0s; }
         .floating-icons img:nth-child(2) { left: 15%; width: 40px; animation-delay: 5s; animation-duration: 30s; }
         .floating-icons img:nth-child(3) { left: 25%; width: 60px; animation-delay: 10s; }
@@ -35,6 +35,10 @@ def render_welcome_page():
         .floating-icons img:nth-child(6) { left: 75%; width: 70px; animation-delay: 8s; animation-duration: 35s; }
         .floating-icons img:nth-child(7) { left: 90%; width: 45px; animation-delay: 12s; }
         .floating-icons img:nth-child(8) { left: 80%; width: 65px; animation-delay: 18s; animation-duration: 22s; }
+        .floating-icons img:nth-child(9) { left: 30%; width: 55px; animation-delay: 20s; }
+        .floating-icons img:nth-child(10) { left: 70%; width: 85px; animation-delay: 25s; animation-duration: 18s; }
+        .floating-icons img:nth-child(11) { left: 10%; width: 40px; animation-delay: 30s; animation-duration: 40s; }
+        .floating-icons img:nth-child(12) { left: 50%; width: 70px; animation-delay: 3s; animation-duration: 25s; }
         
         /* --- تصميم النصوص والزر --- */
         @keyframes glow {
@@ -65,10 +69,22 @@ def render_welcome_page():
         </style>
 
         <div class="floating-icons">
-            <img src="https://i.imgur.com/yGf37eD.png"> <img src="https://i.imgur.com/a4g22dD.png"> <img src="https://i.imgur.com/pdQr2xK.png"> <img src="https://i.imgur.com/AMi1s7f.png"> <img src="https://i.imgur.com/BSJcY2u.png"> <img src="https://i.imgur.com/VnOUjPa.png"> <img src="https://i.imgur.com/k28V1g4.png"> <img src="https://i.imgur.com/5w5cT62.png"> </div>
+            <img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501400">
+            <img src="https://assets.coingecko.com/coins/images/279/large/ethereum.png?1696501638">
+            <img src="https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png?1696502009">
+            <img src="https://assets.coingecko.com/coins/images/4128/large/solana.png?1696504756">
+            <img src="https://assets.coingecko.com/coins/images/975/large/cardano.png?1696502090">
+            <img src="https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png?1696501442">
+            <img src="https://assets.coingecko.com/coins/images/7310/large/polkadot-new-dot-logo.png?1696507567">
+            <img src="https://assets.coingecko.com/coins/images/5/large/dogecoin.png?1696501409">
+            <img src="https://assets.coingecko.com/coins/images/877/large/chainlink-new-logo.png?1696502009">
+            <img src="https://assets.coingecko.com/coins/images/13469/large/uniswap-uni.png?1696513360">
+            <img src="https://assets.coingecko.com/coins/images/2/large/litecoin.png?1696501419">
+            <img src="https://assets.coingecko.com/coins/images/325/large/Tether-logo.png?1696501661">
+        </div>
     """, unsafe_allow_html=True)
 
-    # --- استخدام مكونات Streamlit للتحكم في مكان المحتوى (لا تغيير هنا) ---
+    # --- استخدام مكونات Streamlit للتحكم في مكان المحتوى (هذا يحل مشكلة التمرير) ---
     for _ in range(7):
         st.write("") # مسافات فارغة من الأعلى
 
