@@ -66,9 +66,10 @@ if st.session_state.show_welcome_page:
             font-size: 1.5rem;
             color: #cccccc;
             margin-top: -10px;
+            margin-bottom: 40px; /* زيادة المسافة تحت العنوان لترك مكان للزر */
         }
         
-        /* تصميم الزر */
+        /* تصميم الزر (موضعه الآن في المنتصف بسبب الـ welcome-container) */
         .stButton>button {
             border: 2px solid #007bff;
             border-radius: 50px;
@@ -77,7 +78,6 @@ if st.session_state.show_welcome_page:
             color: white;
             background: transparent;
             transition: all 0.3s ease;
-            margin-top: 40px;
         }
         .stButton>button:hover {
             background: #007bff;
@@ -90,13 +90,13 @@ else:
     background_url = "https://i.imgur.com/Utvjk6E.png"
     css = f"""
         <style>
-        header, footer { visibility: hidden; }
-        .stApp {
+        header, footer {{ visibility: hidden; }}
+        .stApp {{
             background-image: url("{background_url}");
             background-size: cover; /* تم إصلاح المشكلة هنا */
             background-position: center;
             background-attachment: fixed;
-        }
+        }}
         </style>
     """
 
