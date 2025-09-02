@@ -1,69 +1,41 @@
 import streamlit as st
 
 def render_welcome_page():
-    # --- هذا الكود يحتوي على كل شيء: التصميم والمحتوى والزر ---
-    st.markdown("""
-        <style>
-        /* إخفاء العناصر الافتراضية */
-        header, footer { visibility: hidden; }
-        .stApp {
-            background-color: #0a0a0f; /* خلفية داكنة وأنيقة */
-            overflow: hidden; /* منع التمرير */
-        }
-        /* حاوية لتوسيط كل شيء في الصفحة */
-        .welcome-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
-        /* تصميم العنوان الرئيسي */
-        .main-title {
-            font-size: 5rem;
-            color: #ffffff;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
-        }
-        /* تصميم النص التحفيزي */
-        .subtitle {
-            font-size: 1.5rem;
-            color: #cccccc;
-            margin-top: -10px;
-            margin-bottom: 50px; /* مسافة بين النص والزر */
-        }
-        /* تصميم الزر */
-        .stButton>button {
-            border: 2px solid #007bff;
-            border-radius: 50px;
-            padding: 15px 40px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: white;
-            background: transparent;
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 0 15px #007bff;
-        }
-        .stButton>button:hover {
-            background: #007bff;
-            box-shadow: 0 0 25px #007bff, 0 0 50px #007bff;
-            transform: scale(1.05);
-        }
-        </style>
+    # --- استخدام أعمدة لتوسيط المحتوى بالكامل ومنع التمرير ---
+    _, center_col, _ = st.columns([1, 2, 1])
 
-        <div class="welcome-container">
-            <h1 class="main-title">SIGNAL PRIME</h1>
-            <p class="subtitle">Where Data Meets Decision.</p>
-        </div>
-    """, unsafe_allow_html=True)
+    with center_col:
+        # مسافات فارغة من الأعلى لدفع المحتوى للأسفل قليلاً
+        for _ in range(4):
+            st.write("")
 
-    # وضع الزر في حاوية منفصلة لضمان عمله
-    with st.container():
-        # استخدام أعمدة لتوسيط الزر
-        _, center_col, _ = st.columns([1, 1, 1])
-        with center_col:
-            if st.button("🚀 Launch Scanner", use_container_width=True, key="launch_scanner_final_stable"):
-                st.session_state.show_welcome_page = False
-                st.rerun()
+        # العنوان الرئيسي والنص التحفيزي
+        st.markdown("<h1 style='text-align: center; color: white; font-size: 4rem; text-shadow: 0 0 15px #4da8ff;'>SIGNAL PRIME</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #cccccc; font-size: 1.5rem;'>Where Data Meets Decision.</p>", unsafe_allow_html=True)
+        
+        # مسافة قبل الأيقونات
+        st.write("")
+        st.write("")
+
+        # --- عرض 6 أيقونات مضمونة في صف واحد باستخدام st.columns ---
+        icon_urls = [
+            "https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=025",
+            "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=025",
+            "https://cryptologos.cc/logos/binance-coin-bnb-logo.svg?v=025",
+            "https://cryptologos.cc/logos/solana-sol-logo.svg?v=025",
+            "https://cryptologos.cc/logos/cardano-ada-logo.svg?v=025",
+            "https://cryptologos.cc/logos/ripple-xrp-logo.svg?v=025",
+        ]
+        
+        icon_cols = st.columns(len(icon_urls))
+        for i, col in enumerate(icon_cols):
+            col.image(icon_urls[i], width=50)
+        
+        # مسافات فارغة قبل الزر
+        for _ in range(4):
+            st.write("")
+
+        # --- زر البدء في المنتصف ---
+        if st.button("🚀 Launch Scanner", use_container_width=True, key="launch_scanner_guaranteed"):
+            st.session_state.show_welcome_page = False
+            st.rerun()
