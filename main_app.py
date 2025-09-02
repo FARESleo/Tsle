@@ -223,7 +223,35 @@ def render_main_app():
                 time_html_element = f"<span style='font-size: 14px; color: #888; margin-left: 15px;'>⏱️ {est_time_display}</span>" if est_time_display else ""
                 st.markdown(f"""<div class="trade-plan-metric"><div class="trade-plan-metric-label">🎯 السعر المستهدف:</div><div class="trade-plan-metric-value">{format_price(result.get('take_profit'))} <span style='font-size: 14px; color: green;'>{profit_display}</span>{time_html_element}</div></div><div class="trade-plan-metric"><div class="trade-plan-metric-label">🛑 وقف الخسارة:</div><div class="trade-plan-metric-value">{format_price(result.get('stop_loss'))} <span style='font-size: 14px; color: red;'>{loss_display}</span></div></div>""", unsafe_allow_html=True)
             with pnl_cols[1]:
-                st.markdown(f"""<div class="trade-plan-metric"><div class="trade-plan-metric-label">📈 سعر الدخول:</div><div class="trade-plan-metric-value">{format_price(result.get('entry'))}</div></div>""", unsafe_allow_html=True)
+                st.markdown("""
+    <style>
+    .stApp {
+        background-image: url("https://i.imgur.com/Utvjk6E.png");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        z-index: -1;
+    }
+    .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
+    .card-header { font-size: 14px; color: #bbb; margin-bottom: 5px; }
+    .card-value { font-size: 24px; font-weight: bold; color: white; }
+    .progress-bar-container { background-color: #333; border-radius: 5px; height: 10px; margin-top: 10px; overflow: hidden; }
+    .progress-bar { height: 100%; transition: width 0.5s ease-in-out; }
+    .trade-plan-card { background-color: #1e1e1e; border-radius: 10px; padding: 20px; border: 1px solid #333; margin-top: 20px; }
+    .trade-plan-title { font-size: 20px; font-weight: bold; color: #007bff; margin-bottom: 15px; text-align: center; }
+    .trade-plan-metric { margin-bottom: 15px; }
+    .trade-plan-metric-label { font-size: 16px; color: #999; margin-bottom: 5px; }
+    .trade-plan-metric-value { font-size: 20px; font-weight: bold; color: white; }
+    .reason-card { background-color: #2a2a2a; border-radius: 8px; padding: 15px; border-left: 5px solid; margin-bottom: 20px; }
+    .reason-card.bullish { border-color: #28a745; }
+    .reason-card.bearish { border-color: #dc3545; }
+    .reason-card.neutral { border-color: #ffc107; }
+    .reason-text { font-size: 18px; color: white; }
+    .stButton>button { border-radius: 50px; background-image: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; border: none; }
+    .stButton>button:hover { background-image: linear-gradient(to right, #0056b3, #007bff); }
+    .stMetric { background-color: #1e1e1e; border-radius: 10px; padding: 10px; text-align: center; }
+    </style>
+    """, unsafe_allow_html=True)
             st.markdown("---")
             st.markdown("### 📊 المقاييس الأساسية")
             metrics_data = result.get("metrics", {})
