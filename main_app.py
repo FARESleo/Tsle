@@ -1,4 +1,4 @@
-# main_app.py (النسخة النهائية والمحسّنة)
+# main_app.py (مُعدل مع إضافة زر الرجوع)
 import streamlit as st
 import pandas as pd
 from math import isnan
@@ -9,7 +9,7 @@ import requests
 BACKEND_URL = "https://b6697ea5-cb9e-4031-abde-ec9d90eb52d0-00-c61ufn0y915m.worf.replit.dev"
 
 # ------------------------------------------------------------
-# دوال مساعدة للتواصل مع الـ Backend API
+# دوال مساعدة للتواصل مع الـ Backend API (تبقى كما هي)
 # ------------------------------------------------------------
 @st.cache_data(ttl=3600)
 def get_instruments_from_backend():
@@ -55,7 +55,7 @@ def get_analysis_from_backend(instId, bar):
         return {"error": error_message}
 
 # ------------------------------------------------------------
-# دوال الواجهة
+# دوال الواجهة (تبقى كما هي)
 # ------------------------------------------------------------
 def format_price(price, decimals=None):
     if price is None or isinstance(price, (str, bool)) or isnan(price): return "N/A"
@@ -123,7 +123,6 @@ def live_market_tracker():
         st.warning("لا يمكن عرض بيانات السوق حالياً. يرجى المحاولة لاحقاً.")
 
 def render_main_app():
-    # --- هذا هو كود التصميم المهم الذي تم استعادته من النسخة الأولى ---
     st.markdown("""
         <style>
         .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
@@ -151,7 +150,16 @@ def render_main_app():
     if 'last_instId' not in st.session_state: st.session_state.last_instId = ""
     if 'last_bar' not in st.session_state: st.session_state.last_bar = ""
     
-    st.markdown("<h1 style='font-size: 2.5rem; font-weight: bold; margin: 0;'>🧠 Smart Money Scanner</h1>", unsafe_allow_html=True)
+    # --- هذا هو التعديل: إضافة زر الرجوع بجانب العنوان ---
+    col1, col2 = st.columns([0.85, 0.15])
+    with col1:
+        st.markdown("<h1 style='font-size: 2.5rem; font-weight: bold; margin: 0;'>🧠 Smart Money Scanner</h1>", unsafe_allow_html=True)
+    with col2:
+        if st.button("رجوع إلى الخلف ↩️"):
+            st.session_state.show_welcome_page = True
+            st.rerun()
+    # --- نهاية التعديل ---
+
     st.markdown(f"**آخر تحديث:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     st.markdown("---")
     
@@ -185,7 +193,6 @@ def render_main_app():
         elif 'recommendation' not in result:
              st.info("❌ لا توجد بيانات متاحة للعرض. الرجاء الضغط 'ابدأ التحليل!'")
         else:
-            # --- هذا هو الجزء الخاص بعرض النتائج بالتصميم الجميل ---
             def get_confidence_color(pct):
                 if pct is None or isnan(pct): return "gray"
                 if pct <= 40: return "red"
