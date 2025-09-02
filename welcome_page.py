@@ -1,18 +1,6 @@
-# frontend/welcome_page.py
 import streamlit as st
 
 def render_welcome_page():
-    # CSS خاص بصفحة الترحيب (خلفية مختلفة)
-    st.markdown("""
-        <style>
-        .stApp {
-            background-image: url("https://i.imgur.com/Ra9blqc.png");
-            background-size: cover;
-        }
-        header, footer { visibility: hidden; }
-        </style>
-        """, unsafe_allow_html=True)
-
     # محتوى صفحة الترحيب
     st.markdown("""
         <div style="text-align: center; margin-top: 25vh;">
