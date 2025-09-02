@@ -13,36 +13,35 @@ st.set_page_config(
 if 'show_welcome_page' not in st.session_state:
     st.session_state.show_welcome_page = True
 
-# --- CSS مركزي ---
+# --- CSS مركزي ومحسّن ---
+# هذا هو الكود الجديد الذي يضمن عرض الخلفية بشكل أفضل
+common_css = """
+    /* إخفاء الشريط العلوي والسفلي */
+    header, footer { visibility: hidden; }
+
+    .stApp {
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+"""
+
 # اختر رابط الخلفية بناءً على الصفحة الحالية
 if st.session_state.show_welcome_page:
-    background_url = "https://i.imgur.com/Ra9blqc.png" # خلفية صفحة الترحيب
-    css = """
-        <style>
-        .stApp {
-            background-image: url("%s");
-            background-size: cover;
-        }
-        /* إخفاء الشريط العلوي والسفلي */
-        header, footer { visibility: hidden; }
-        </style>
-    """ % background_url
+    background_url = "https://i.imgur.com/Ra9blqc.png"
 else:
-    background_url = "https://i.imgur.com/Utvjk6E.png" # خلفية التطبيق الرئيسي
-    css = """
-        <style>
-        .stApp {
-            background-image: url("%s");
-            background-size: cover;
-            background-attachment: fixed;
-        }
-        /* إخفاء الشريط العلوي والسفلي أيضاً هنا */
-        header, footer { visibility: hidden; }
-        </style>
-    """ % background_url
+    background_url = "https://i.imgur.com/Utvjk6E.png"
 
-# تطبيق الـ CSS
-st.markdown(css, unsafe_allow_html=True)
+# تطبيق الـ CSS مع الخلفية المحددة
+st.markdown(f"""
+    <style>
+    {common_css}
+    .stApp {{
+        background-image: url("{background_url}");
+    }}
+    </style>
+    """, unsafe_allow_html=True)
 
 
 # Display the appropriate page based on the session state
