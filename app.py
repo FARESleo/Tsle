@@ -1,6 +1,11 @@
 import streamlit as st
-# تم تصحيح اسم الملف هنا من main-app إلى main_app
-from main_app import render_main_app 
+import yaml
+from yaml.loader import SafeLoader
+import streamlit_authenticator as stauth
+
+# -- استيراد الدوال من ملفاتك --
+# تأكد من أن اسم الملف هو main_app.py (مع شرطة سفلية)
+from main_app import render_main_app
 from welcome_page import render_welcome_page
 
 st.set_page_config(
@@ -9,43 +14,48 @@ st.set_page_config(
     layout="wide",
 )
 
-# دالة لتحميل CSS من ملف خارجي
-def load_css(file_name):
-    try:
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    except FileNotFoundError:
-        st.error(f"خطأ: لم يتم العثور على ملف التصميم '{file_name}'. تأكد من وجوده في نفس المجلد.")
+# --- تحميل إعدادات المستخدمين من ملف config.yaml ---
+try:
+    with open('config.yaml') as file:
+        config = yaml.load(file, Loader=SafeLoader)
+except FileNotFoundError:
+    st.error("خطأ: لم يتم العثور على ملف الإعدادات 'config.yaml'.")
+    st.stop()
 
-# --- تحميل ملف CSS المركزي للمكونات ---
-load_css("style.css")
 
-if 'show_welcome_page' not in st.session_state:
-    st.session_state.show_welcome_page = True
+# --- تهيئة أداة المصادقة ---
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['preauthorized']
+)
 
-# --- تطبيق خلفية الصفحة المناسبة ديناميكيًا ---
-if st.session_state.show_welcome_page:
-    # تطبيق الخلفية الداكنة للصفحة الترحيبية
-    st.markdown("""
-        <style>
-        .stApp {
-            background-color: #0a0a0f;
-            overflow: hidden;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-    render_welcome_page()
-else:
-    # تطبيق صورة الخلفية للتطبيق الرئيسي
-    background_url = "https://i.imgur.com/Utvjk6E.png"
-    st.markdown(f"""
-        <style>
-        .stApp {{
-            background-image: url("{background_url}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }}
-        </style>
-    """, unsafe_allow_html=True)
+# --- عرض نموذج تسجيل الدخول ---
+# هذا السطر سيعرض حقول اسم المستخدم وكلمة المرور
+name, authentication_status, username = authenticator.login('main')
+
+
+# --- التحقق من حالة تسجيل الدخول ---
+
+if st.session_state["authentication_status"]:
+    # --- الحالة: تسجيل الدخول ناجح ---
+    
+    # 1. اعرض التطبيق الرئيسي الكامل
     render_main_app()
+    
+    # 2. أضف زر تسجيل الخروج في الشريط الجانبي
+    with st.sidebar:
+        st.write(f'أهلاً بك *{st.session_state["name"]}*')
+        st.title("") # مسافة
+        authenticator.logout('تسجيل الخروج', 'main')
+
+elif st.session_state["authentication_status"] is False:
+    # --- الحالة: خطأ في تسجيل الدخول ---
+    st.error('اسم المستخدم أو كلمة المرور غير صحيحة')
+    render_welcome_page() # نعرض الصفحة الترحيبية مرة أخرى
+
+elif st.session_state["authentication_status"] is None:
+    # --- الحالة: لم يتم تسجيل الدخول بعد ---
+    render_welcome_page()
