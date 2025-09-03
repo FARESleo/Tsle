@@ -1,4 +1,4 @@
-# main_app.py (النسخة النهائية والمحسّنة)
+# main_app.py (النسخة النهائية الكاملة)
 import streamlit as st
 import pandas as pd
 from math import isnan
@@ -59,17 +59,14 @@ def calculate_pnl_percentages(entry_price, take_profit, stop_loss):
     if entry_price is None or take_profit is None or stop_loss is None or entry_price == 0:
         return None, None
     
-    # تحديد اتجاه الصفقة
     is_long = take_profit > entry_price
     
     if is_long:
-        # صفقة شراء: الربح هو (الهدف - الدخول)، والخسارة هي (الوقف - الدخول)
         profit_pct = ((take_profit - entry_price) / entry_price) * 100
-        loss_pct = ((stop_loss - entry_price) / entry_price) * 100  # ستكون قيمته سالبة
-    else: # صفقة بيع
-        # صفقة بيع: الربح هو (الدخول - الهدف)، والخسارة هي (الدخول - الوقف)
-        profit_pct = ((entry_price - take_profit) / entry_price) * 100 # ستكون قيمته موجبة
-        loss_pct = ((entry_price - stop_loss) / entry_price) * 100 # ستكون قيمته سالبة
+        loss_pct = ((stop_loss - entry_price) / entry_price) * 100
+    else:
+        profit_pct = ((entry_price - take_profit) / entry_price) * 100
+        loss_pct = ((entry_price - stop_loss) / entry_price) * 100
         
     return profit_pct, loss_pct
 
@@ -129,6 +126,17 @@ def render_main_app():
         .stButton>button { border-radius: 50px; background-image: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; border: none; }
         .stButton>button:hover { background-image: linear-gradient(to right, #0056b3, #007bff); }
         .stMetric { background-color: #1e1e1e; border-radius: 10px; padding: 10px; text-align: center; }
+
+        /* تعديل لضمان بقاء لون النص أبيضًا دائمًا داخل st.metric */
+        .stMetric > label[data-testid="stMetricLabel"] {
+            color: #bbb; /* لون رمادي فاتح للعنوان */
+        }
+        .stMetric > div[data-testid="stMetricValue"] {
+            color: white; /* لون أبيض ساطع للقيمة الرئيسية */
+        }
+        .stMetric > div[data-testid="stMetricDelta"] {
+            color: rgba(255, 255, 255, 0.75); /* لون أبيض باهت قليلًا للوزن */
+        }
 
         /* الأنماط الجديدة لبطاقات خطة التداول */
         .trade-plan-item-card {
@@ -238,17 +246,14 @@ def render_main_app():
             if "صعودية" in reason_text: reason_class = "bullish"
             elif "هبوطية" in reason_text: reason_class = "bearish"
             st.markdown(f"""<div class="trade-plan-card"><div class="trade-plan-title">📝 خطة التداول</div><div class="reason-card {reason_class}"><div class="trade-plan-metric-label">السبب:</div><div class="reason-text">{reason_text}</div></div>""", unsafe_allow_html=True)
-
-            # --- بداية الكود الجديد والمحسّن لعرض خطة التداول ---
+            
             profit_pct, loss_pct = calculate_pnl_percentages(result.get('entry'), result.get('take_profit'), result.get('stop_loss'))
 
-            # تهيئة متغيرات العرض
             profit_display = f"({profit_pct:+.2f}%)" if profit_pct is not None else ""
             loss_display = f"({loss_pct:.2f}%)" if loss_pct is not None else ""
             est_time_display = result.get("est_time_to_target", "")
             time_html_element = f"<br>⏱️ {est_time_display}" if est_time_display else ""
 
-            # إنشاء 3 أعمدة للبطاقات
             tp_col, entry_col, sl_col = st.columns(3)
 
             with tp_col:
@@ -281,7 +286,6 @@ def render_main_app():
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
-            # --- نهاية الكود الجديد ---
 
             st.markdown("---")
             st.markdown("### 📊 المقاييس الأساسية")
