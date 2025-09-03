@@ -4,3 +4,4 @@ pandas
 numpy
 streamlit-authenticator
 bcrypt
+streamlit-option-menu
