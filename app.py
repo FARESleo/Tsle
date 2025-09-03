@@ -28,24 +28,25 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-# --- التحقق من حالة تسجيل الدخول أولاً ---
+# --- التحقق المبدئي من حالة تسجيل الدخول ---
 if 'authentication_status' not in st.session_state:
     st.session_state['authentication_status'] = None
 
-# --- المنطق الجديد والمُصحح ---
+# --- المنطق الصحيح والنهائي ---
 if st.session_state["authentication_status"]:
     # --- الحالة: تسجيل الدخول ناجح ---
     with st.sidebar:
         st.write(f'أهلاً بك *{st.session_state["name"]}*')
-        authenticator.logout('تسجيل الخروج', 'main')
+        # الاستدعاء الصحيح لدالة الخروج
+        authenticator.logout(button_name='تسجيل الخروج', location='main')
     
     render_main_app()
     
 else:
     # --- الحالة: لم يتم تسجيل الدخول بعد أو فشل الدخول ---
-    # اعرض نموذج تسجيل الدخول في الشريط الجانبي
     try:
-        name, authentication_status, username = authenticator.login('Login', 'sidebar')
+        # الاستدعاء الصحيح لدالة الدخول
+        name, authentication_status, username = authenticator.login(form_name='Login', location='sidebar')
         
         if st.session_state["authentication_status"] is False:
             with st.sidebar:
