@@ -130,3 +130,37 @@ header, footer {
 .trade-plan-item-header { font-size: 15px; color: #bbb; margin-bottom: 8px; }
 .trade-plan-item-value { font-size: 22px; font-weight: bold; color: white; word-wrap: break-word; }
 .trade-plan-item-sub-value { font-size: 14px; margin-top: 5px; min-height: 20px; }
+/* --- تنسيقات جديدة لتجميل نموذج تسجيل الدخول --- */
+
+/* استهداف النموذج الرئيسي لتسجيل الدخول */
+div[data-testid="stForm"] {
+    background-color: rgba(30, 30, 30, 0.7); /* خلفية شبه شفافة */
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 2rem;
+    backdrop-filter: blur(10px); /* تأثير زجاجي جميل */
+}
+
+/* تنسيق حقول الإدخال (اسم المستخدم وكلمة المرور) */
+div[data-testid="stTextInput"] > div > div > input, 
+div[data-testid="stSecretInput"] > div > div > input {
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    border: 1px solid #555;
+}
+
+/* تنسيق زر تسجيل الدخول */
+div[data-testid="stFormSubmitButton"] > button {
+    background-image: linear-gradient(to right, #007bff, #0056b3);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    width: 100%;
+    font-weight: bold;
+}
+
+div[data-testid="stFormSubmitButton"] > button:hover {
+    background-image: linear-gradient(to right, #0056b3, #007bff);
+    box-shadow: 0 0 15px #007bff;
+}
