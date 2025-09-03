@@ -2,6 +2,7 @@ import streamlit as st
 import yaml
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
+from streamlit_option_menu import option_menu # --- استيراد المكتبة الجديدة ---
 
 from main_app import render_main_app
 from welcome_page import render_welcome_page
@@ -38,9 +39,36 @@ if st.session_state.get("authentication_status"):
         st.session_state['subscription'] = 'Free'
     # --- نهاية الكود الجديد ---
 
-    render_main_app()
-    with st.sidebar:
-        st.write(f'أهلاً بك *{st.session_state["name"]}*')
+    # --- القائمة الجديدة للمستخدم ---
+    # وضع القائمة داخل أعمدة لوضعها في أقصى اليمين
+    _, col2 = st.columns([6, 1])
+    with col2:
+        selected_option = option_menu(
+            menu_title=None, # لا نريد عنوانًا للقائمة
+            options=["ملفي الشخصي", "تسجيل الخروج"],
+            icons=['person-circle', 'box-arrow-right'], # أيقونات جميلة
+            menu_icon="cast",
+            default_index=0,
+            orientation="horizontal",
+            styles={
+                "container": {"padding": "0!important", "background-color": "transparent"},
+                "icon": {"color": "white", "font-size": "18px"}, 
+                "nav-link": {"font-size": "16px", "text-align": "center", "margin":"0px", "--hover-color": "#333"},
+                "nav-link-selected": {"background-color": "#02ab21"},
+            }
+        )
+    
+    # التعامل مع اختيار المستخدم
+    if selected_option == "تسجيل الخروج":
         authenticator.logout('تسجيل الخروج', 'main')
+        st.rerun()
+    elif selected_option == "ملفي الشخصي":
+        # يمكنك هنا إضافة صفحة خاصة بملف المستخدم في المستقبل
+        st.toast("سيتم إضافة صفحة الملف الشخصي قريبًا!")
+
+    # عرض التطبيق الرئيسي
+    render_main_app()
+
 else:
+    # إذا لم يسجل دخوله، اعرض الصفحة الترحيبية
     render_welcome_page(authenticator)
