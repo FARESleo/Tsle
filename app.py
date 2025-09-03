@@ -28,32 +28,33 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-# --- التحقق المبدئي من حالة تسجيل الدخول ---
-if 'authentication_status' not in st.session_state:
-    st.session_state['authentication_status'] = None
+# --- عرض نموذج تسجيل الدخول في الشريط الجانبي ---
+# هذه الدالة تقوم بعرض النموذج وتحديث حالة الدخول داخليًا
+authenticator.login(location='sidebar')
 
-# --- المنطق الصحيح والنهائي ---
+# --- التحقق من حالة الدخول من st.session_state ---
+
 if st.session_state["authentication_status"]:
     # --- الحالة: تسجيل الدخول ناجح ---
+    
+    # عرض زر الخروج في الشريط الجانبي
     with st.sidebar:
         st.write(f'أهلاً بك *{st.session_state["name"]}*')
-        # الاستدعاء الصحيح لدالة الخروج
         authenticator.logout(button_name='تسجيل الخروج', location='main')
     
+    # عرض التطبيق الرئيسي للتحليلات
     render_main_app()
     
-else:
-    # --- الحالة: لم يتم تسجيل الدخول بعد أو فشل الدخول ---
-    try:
-        # الاستدعاء الصحيح لدالة الدخول
-        name, authentication_status, username = authenticator.login(form_name='Login', location='sidebar')
-        
-        if st.session_state["authentication_status"] is False:
-            with st.sidebar:
-                st.error('اسم المستخدم أو كلمة المرور غير صحيحة')
-        
-        # اعرض الصفحة الترحيبية دائمًا إذا لم يكن المستخدم قد سجل دخوله
-        render_welcome_page()
+elif st.session_state["authentication_status"] is False:
+    # --- الحالة: خطأ في تسجيل الدخول ---
+    with st.sidebar:
+        st.error('اسم المستخدم أو كلمة المرور غير صحيحة')
+    # عرض الصفحة الترحيبية
+    render_welcome_page()
 
-    except Exception as e:
-        st.error(e)
+elif st.session_state["authentication_status"] is None:
+    # --- الحالة: لم يتم تسجيل الدخول بعد ---
+    with st.sidebar:
+        st.info('الرجاء تسجيل الدخول للوصول إلى الماسح الضوئي.')
+    # عرض الصفحة الترحيبية
+    render_welcome_page()
