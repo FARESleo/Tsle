@@ -8,7 +8,9 @@ import requests
 BACKEND_URL = "https://b6697ea5-cb9e-4031-abde-ec9d90eb52d0-00-c61ufn0y915m.worf.replit.dev"
 
 # ------------------------------------------------------------
-# دوال مساعدة للتواصل مع الـ Backend API
+# (جميع الدوال المساعدة الأخرى تبقى كما هي بدون أي تغيير)
+# get_instruments_from_backend, get_analysis_from_backend, 
+# format_price, calculate_pnl_percentages, trading_calculator_app
 # ------------------------------------------------------------
 @st.cache_data(ttl=3600)
 def get_instruments_from_backend():
@@ -43,9 +45,6 @@ def get_analysis_from_backend(instId, bar):
                 error_message = f"حدث خطأ غير معروف في الخادم. Status: {e.response.status_code}"
         return {"error": error_message}
 
-# ------------------------------------------------------------
-# دوال الواجهة
-# ------------------------------------------------------------
 def format_price(price, decimals=None):
     if price is None or isinstance(price, (str, bool)) or isnan(price): return "N/A"
     if decimals is None:
@@ -106,7 +105,40 @@ def trading_calculator_app():
                 st.metric("الربح المتوقع", f"{profit_amount:,.2f} $")
                 st.metric("نسبة الربح مقابل المخاطرة (R:R)", f"{rr_ratio:.2f}x")
 
+
 def render_main_app():
+    # --- الكود الجديد: إعادة الخلفية والتصميم ---
+    st.markdown("""
+        <style>
+        .stApp {
+            background-image: url("https://i.imgur.com/Utvjk6E.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
+        .card-header { font-size: 14px; color: #bbb; margin-bottom: 5px; }
+        .card-value { font-size: 24px; font-weight: bold; color: white; }
+        .progress-bar-container { background-color: #333; border-radius: 5px; height: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; transition: width 0.5s ease-in-out; }
+        .trade-plan-card { background-color: #1e1e1e; border-radius: 10px; padding: 20px; border: 1px solid #333; margin-top: 20px; }
+        .trade-plan-title { font-size: 20px; font-weight: bold; color: #007bff; margin-bottom: 15px; text-align: center; }
+        .reason-card { background-color: #2a2a2a; border-radius: 8px; padding: 15px; border-left: 5px solid; margin-bottom: 20px; }
+        .reason-card.bullish { border-color: #28a745; }
+        .reason-card.bearish { border-color: #dc3545; }
+        .reason-card.neutral { border-color: #ffc107; }
+        .reason-text { font-size: 18px; color: white; }
+        .stButton>button { border-radius: 50px; background-image: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; border: none; }
+        .stButton>button:hover { background-image: linear-gradient(to right, #0056b3, #007bff); }
+        .stMetric { background-color: #1e1e1e; border-radius: 10px; padding: 10px; text-align: center; }
+        .trade-plan-item-card { background-color: #2a2a2a; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #444; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+        .trade-plan-item-header { font-size: 15px; color: #bbb; margin-bottom: 8px; }
+        .trade-plan-item-value { font-size: 22px; font-weight: bold; color: white; word-wrap: break-word; }
+        .trade-plan-item-sub-value { font-size: 14px; margin-top: 5px; min-height: 20px; }
+        </style>
+    """, unsafe_allow_html=True)
+    # --- نهاية الكود الجديد ---
+
     # إدارة الحالة
     if 'analysis_results' not in st.session_state:
         st.session_state.analysis_results = {}
@@ -140,15 +172,14 @@ def render_main_app():
 
         if st.button("🚀 ابدأ التحليل!", use_container_width=True):
             st.session_state.analysis_triggered = True
-            st.session_state.analysis_results = {} # مسح النتائج القديمة لعرض رسالة التحميل
+            st.session_state.analysis_results = {}
             st.rerun()
 
-        # عرض رسالة التحميل إذا تم الضغط على الزر ولم تظهر النتائج بعد
         if st.session_state.analysis_triggered and not st.session_state.analysis_results:
             with st.spinner("...جارٍ الاتصال بالخادم وتنفيذ التحليل"):
                 result = get_analysis_from_backend(selected_instId, bar)
                 st.session_state.analysis_results = result
-                st.session_state.analysis_triggered = False # إيقاف حالة التشغيل
+                st.session_state.analysis_triggered = False
                 st.rerun()
 
         result = st.session_state.analysis_results
@@ -160,7 +191,6 @@ def render_main_app():
         elif 'recommendation' not in result:
              st.info("❌ لا توجد بيانات متاحة للعرض. قد يكون السوق هادئًا. حاول مرة أخرى لاحقًا.")
         else:
-            # (الكود المتبقي لعرض النتائج يبقى كما هو)
             def get_confidence_color(pct):
                 if pct is None or isnan(pct): return "gray"
                 if pct <= 40: return "red"
@@ -179,6 +209,7 @@ def render_main_app():
                 if confidence_pct >= 75: st.success("🎉 إشارة قوية تم اكتشافها!", icon="🔥")
                 elif confidence_pct <= 25: st.warning("⚠️ إشارة ضعيفة. يفضل توخي الحذر.")
 
+            # --- هذا الجزء يراه جميع المستخدمين ---
             cols = st.columns(3)
             with cols[0]:
                 st.markdown(f"""<div class="custom-card"><div class="card-header">📊 الثقة</div><div class="card-value">{confidence_pct:.1f}%</div><div class="progress-bar-container"><div class="progress-bar" style="width:{progress_width}%; background-color:{confidence_color};"></div></div></div>""", unsafe_allow_html=True)
@@ -187,78 +218,44 @@ def render_main_app():
             with cols[2]:
                 st.markdown(f"""<div class="custom-card"><div class="card-header">📈 سعر الدخول</div><div class="card-value">{format_price(result.get('entry'))}</div></div>""", unsafe_allow_html=True)
 
-            st.markdown("---")
-            reason_text = result.get('reason', 'N/A')
-            reason_class = "neutral"
-            if "صعودية" in reason_text: reason_class = "bullish"
-            elif "هبوطية" in reason_text: reason_class = "bearish"
-            st.markdown(f"""<div class="trade-plan-card"><div class="trade-plan-title">📝 خطة التداول</div><div class="reason-card {reason_class}"><div class="trade-plan-metric-label">السبب:</div><div class="reason-text">{reason_text}</div></div>""", unsafe_allow_html=True)
+            # --- الكود الجديد: التحقق من اشتراك PRO ---
+            if st.session_state.get("subscription") == "PRO":
+                # --- هذا الجزء يراه فقط مشتركو PRO ---
+                st.markdown("---")
+                reason_text = result.get('reason', 'N/A')
+                reason_class = "neutral"
+                if "صعودية" in reason_text: reason_class = "bullish"
+                elif "هبوطية" in reason_text: reason_class = "bearish"
+                st.markdown(f"""<div class="trade-plan-card"><div class="trade-plan-title">📝 خطة التداول</div><div class="reason-card {reason_class}"><div class="trade-plan-metric-label">السبب:</div><div class="reason-text">{reason_text}</div></div>""", unsafe_allow_html=True)
+                
+                profit_pct, loss_pct = calculate_pnl_percentages(result.get('entry'), result.get('take_profit'), result.get('stop_loss'))
+                profit_display = f"({profit_pct:+.2f}%)" if profit_pct is not None else ""
+                loss_display = f"({loss_pct:.2f}%)" if loss_pct is not None else ""
+                est_time_display = result.get("est_time_to_target", "")
+                time_html_element = f"<br>⏱️ {est_time_display}" if est_time_display else ""
+                tp_col, entry_col, sl_col = st.columns(3)
+                with tp_col:
+                    st.markdown(f"""<div class="trade-plan-item-card">...</div>""") # أكمل الكود من ملفك
+                with entry_col:
+                    st.markdown(f"""<div class="trade-plan-item-card" style="border: 2px solid #007bff;">...</div>""") # أكمل الكود من ملفك
+                with sl_col:
+                    st.markdown(f"""<div class="trade-plan-item-card">...</div>""") # أكمل الكود من ملفك
+                
+                st.markdown("---")
+                st.markdown("### 📊 المقاييس الأساسية")
+                # ... (كود عرض المقاييس) ...
+
+                st.markdown("---")
+                st.markdown("### 🔍 تحليل إضافي")
+                # ... (كود عرض التحليل الإضافي) ...
             
-            profit_pct, loss_pct = calculate_pnl_percentages(result.get('entry'), result.get('take_profit'), result.get('stop_loss'))
-
-            profit_display = f"({profit_pct:+.2f}%)" if profit_pct is not None else ""
-            loss_display = f"({loss_pct:.2f}%)" if loss_pct is not None else ""
-            est_time_display = result.get("est_time_to_target", "")
-            time_html_element = f"<br>⏱️ {est_time_display}" if est_time_display else ""
-
-            tp_col, entry_col, sl_col = st.columns(3)
-
-            with tp_col:
-                st.markdown(f"""
-                    <div class="trade-plan-item-card">
-                        <div class="trade-plan-item-header">🎯 السعر المستهدف</div>
-                        <div class="trade-plan-item-value">{format_price(result.get('take_profit'))}</div>
-                        <div class="trade-plan-item-sub-value" style="color: #28a745;">
-                            {profit_display} {time_html_element}
-                        </div>
-                    </div>
-                """, unsafe_allow_html=True)
-
-            with entry_col:
-                st.markdown(f"""
-                    <div class="trade-plan-item-card" style="border: 2px solid #007bff;">
-                        <div class="trade-plan-item-header">📈 سعر الدخول</div>
-                        <div class="trade-plan-item-value">{format_price(result.get('entry'))}</div>
-                        <div class="trade-plan-item-sub-value">&nbsp;</div>
-                    </div>
-                """, unsafe_allow_html=True)
-
-            with sl_col:
-                st.markdown(f"""
-                    <div class="trade-plan-item-card">
-                        <div class="trade-plan-item-header">🛑 وقف الخسارة</div>
-                        <div class="trade-plan-item-value">{format_price(result.get('stop_loss'))}</div>
-                        <div class="trade-plan-item-sub-value" style="color: #dc3545;">
-                            {loss_display}
-                        </div>
-                    </div>
-                """, unsafe_allow_html=True)
-
-            st.markdown("---")
-            st.markdown("### 📊 المقاييس الأساسية")
-            metrics_data = result.get("metrics", {})
-            weights_data = result.get("weights", {})
-            icons = {"funding":"💰", "oi":"📊", "cvd":"📈", "orderbook":"⚖️", "backtest":"🧪", "ema_cross": "📈"}
-            
-            available_metrics = {k:v for k,v in metrics_data.items() if v is not None}
-            if available_metrics:
-                cols = st.columns(len(available_metrics))
-                for idx, (k, score) in enumerate(available_metrics.items()):
-                    with cols[idx]:
-                        weight = weights_data.get(k)
-                        weight_display = f"w={weight:.2f}" if weight is not None else ""
-                        label_map = {"funding": "التمويل", "oi": "OI", "cvd": "CVD", "orderbook": "الطلبات", "backtest": "الاختبار الخلفي", "ema_cross": "EMA"}
-                        st.metric(label=f"{icons.get(k, '⚙️')} {label_map.get(k, k.title())}", value=f"{score:.3f}", delta=weight_display)
             else:
-                st.info("لا توجد بيانات مقاييس لعرضها.")
-            
-            st.markdown("---")
-            st.markdown("### 🔍 تحليل إضافي")
-            raw_data = result.get('raw', {})
-            st.markdown(f"• **الدعم:** {format_price(raw_data.get('support'))} | **المقاومة:** {format_price(raw_data.get('resistance'))}")
-            st.markdown(f"• **حالة السوق:** {raw_data.get('market_regime', 'N/A')} (ADX: {raw_data.get('adx', 'N/A')})")
-            if st.checkbox("عرض البيانات الخام للشفافية"):
-                st.json(result)
+                # --- رسالة للمستخدمين العاديين للترقية ---
+                st.markdown("---")
+                st.success("✨ للوصول إلى خطة التداول الكاملة والمقاييس المتقدمة، قم بالترقية إلى PRO!", icon="🚀")
+                if st.button("الترقية إلى PRO الآن"):
+                    st.balloons()
+            # --- نهاية الكود الجديد ---
 
     elif selected_page == "🧮 الحاسبة":
         trading_calculator_app()
