@@ -1,4 +1,4 @@
-# main_app.py (النسخة النهائية الصحيحة)
+# main_app.py (النسخة النهائية والمحسّنة)
 import streamlit as st
 import pandas as pd
 from math import isnan
@@ -56,11 +56,21 @@ def format_price(price, decimals=None):
     return f"{price:,.{decimals}f}"
 
 def calculate_pnl_percentages(entry_price, take_profit, stop_loss):
-    if entry_price is None or take_profit is None or stop_loss is None or entry_price == 0: return None, None
-    profit_pct = ((take_profit - entry_price) / entry_price) * 100
-    loss_pct = ((stop_loss - entry_price) / entry_price) * 100
+    if entry_price is None or take_profit is None or stop_loss is None or entry_price == 0:
+        return None, None
+    
+    # تحديد اتجاه الصفقة
     is_long = take_profit > entry_price
-    if not is_long: profit_pct, loss_pct = loss_pct, profit_pct
+    
+    if is_long:
+        # صفقة شراء: الربح هو (الهدف - الدخول)، والخسارة هي (الوقف - الدخول)
+        profit_pct = ((take_profit - entry_price) / entry_price) * 100
+        loss_pct = ((stop_loss - entry_price) / entry_price) * 100  # ستكون قيمته سالبة
+    else: # صفقة بيع
+        # صفقة بيع: الربح هو (الدخول - الهدف)، والخسارة هي (الدخول - الوقف)
+        profit_pct = ((entry_price - take_profit) / entry_price) * 100 # ستكون قيمته موجبة
+        loss_pct = ((entry_price - stop_loss) / entry_price) * 100 # ستكون قيمته سالبة
+        
     return profit_pct, loss_pct
 
 def trading_calculator_app():
@@ -101,7 +111,7 @@ def trading_calculator_app():
                 st.metric("نسبة الربح مقابل المخاطرة (R:R)", f"{rr_ratio:.2f}x")
 
 def render_main_app():
-    # كود التصميم الأصلي الخاص بك
+    # كود التصميم والتنسيق
     st.markdown("""
         <style>
         .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
@@ -111,9 +121,6 @@ def render_main_app():
         .progress-bar { height: 100%; transition: width 0.5s ease-in-out; }
         .trade-plan-card { background-color: #1e1e1e; border-radius: 10px; padding: 20px; border: 1px solid #333; margin-top: 20px; }
         .trade-plan-title { font-size: 20px; font-weight: bold; color: #007bff; margin-bottom: 15px; text-align: center; }
-        .trade-plan-metric { margin-bottom: 15px; }
-        .trade-plan-metric-label { font-size: 16px; color: #999; margin-bottom: 5px; }
-        .trade-plan-metric-value { font-size: 20px; font-weight: bold; color: white; }
         .reason-card { background-color: #2a2a2a; border-radius: 8px; padding: 15px; border-left: 5px solid; margin-bottom: 20px; }
         .reason-card.bullish { border-color: #28a745; }
         .reason-card.bearish { border-color: #dc3545; }
@@ -122,6 +129,35 @@ def render_main_app():
         .stButton>button { border-radius: 50px; background-image: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; border: none; }
         .stButton>button:hover { background-image: linear-gradient(to right, #0056b3, #007bff); }
         .stMetric { background-color: #1e1e1e; border-radius: 10px; padding: 10px; text-align: center; }
+
+        /* الأنماط الجديدة لبطاقات خطة التداول */
+        .trade-plan-item-card {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #444;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .trade-plan-item-header {
+            font-size: 15px;
+            color: #bbb;
+            margin-bottom: 8px;
+        }
+        .trade-plan-item-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            word-wrap: break-word;
+        }
+        .trade-plan-item-sub-value {
+            font-size: 14px;
+            margin-top: 5px;
+            min-height: 20px; /* لضمان تساوي ارتفاع البطاقات */
+        }
         </style>
         """, unsafe_allow_html=True)
     
@@ -140,7 +176,6 @@ def render_main_app():
     st.markdown(f"**آخر تحديث:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     st.markdown("---")
     
-    # --- (تمت إزالة "المتتبع" من هنا) ---
     selected_page = st.radio("Go to", ["📊 التحليل", "🧮 الحاسبة"], horizontal=True, label_visibility="collapsed")
 
     if selected_page == "📊 التحليل":
@@ -202,19 +237,51 @@ def render_main_app():
             reason_class = "neutral"
             if "صعودية" in reason_text: reason_class = "bullish"
             elif "هبوطية" in reason_text: reason_class = "bearish"
-            st.markdown(f"""<div class="trade-plan-card"><div class="trade-plan-title">📝 خطة التداول</div><div class="reason-card {reason_class}"><div class="trade-plan-metric-label">السبب:</div><div class="reason-text">{reason_text}</div></div></div>""", unsafe_allow_html=True)
-            
+            st.markdown(f"""<div class="trade-plan-card"><div class="trade-plan-title">📝 خطة التداول</div><div class="reason-card {reason_class}"><div class="trade-plan-metric-label">السبب:</div><div class="reason-text">{reason_text}</div></div>""", unsafe_allow_html=True)
+
+            # --- بداية الكود الجديد والمحسّن لعرض خطة التداول ---
             profit_pct, loss_pct = calculate_pnl_percentages(result.get('entry'), result.get('take_profit'), result.get('stop_loss'))
-            profit_display = f"({profit_pct:.2f}%)" if profit_pct is not None else ""
+
+            # تهيئة متغيرات العرض
+            profit_display = f"({profit_pct:+.2f}%)" if profit_pct is not None else ""
             loss_display = f"({loss_pct:.2f}%)" if loss_pct is not None else ""
-            
-            pnl_cols = st.columns([2, 1])
-            with pnl_cols[0]:
-                est_time_display = result.get("est_time_to_target")
-                time_html_element = f"<span style='font-size: 14px; color: #888; margin-left: 15px;'>⏱️ {est_time_display}</span>" if est_time_display else ""
-                st.markdown(f"""<div class="trade-plan-metric"><div class="trade-plan-metric-label">🎯 السعر المستهدف:</div><div class="trade-plan-metric-value">{format_price(result.get('take_profit'))} <span style='font-size: 14px; color: green;'>{profit_display}</span>{time_html_element}</div></div><div class="trade-plan-metric"><div class="trade-plan-metric-label">🛑 وقف الخسارة:</div><div class="trade-plan-metric-value">{format_price(result.get('stop_loss'))} <span style='font-size: 14px; color: red;'>{loss_display}</span></div></div>""", unsafe_allow_html=True)
-            with pnl_cols[1]:
-                st.markdown(f"""<div class="trade-plan-metric"><div class="trade-plan-metric-label">📈 سعر الدخول:</div><div class="trade-plan-metric-value">{format_price(result.get('entry'))}</div></div>""", unsafe_allow_html=True)
+            est_time_display = result.get("est_time_to_target", "")
+            time_html_element = f"<br>⏱️ {est_time_display}" if est_time_display else ""
+
+            # إنشاء 3 أعمدة للبطاقات
+            tp_col, entry_col, sl_col = st.columns(3)
+
+            with tp_col:
+                st.markdown(f"""
+                    <div class="trade-plan-item-card">
+                        <div class="trade-plan-item-header">🎯 السعر المستهدف</div>
+                        <div class="trade-plan-item-value">{format_price(result.get('take_profit'))}</div>
+                        <div class="trade-plan-item-sub-value" style="color: #28a745;">
+                            {profit_display} {time_html_element}
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            with entry_col:
+                st.markdown(f"""
+                    <div class="trade-plan-item-card" style="border: 2px solid #007bff;">
+                        <div class="trade-plan-item-header">📈 سعر الدخول</div>
+                        <div class="trade-plan-item-value">{format_price(result.get('entry'))}</div>
+                        <div class="trade-plan-item-sub-value">&nbsp;</div>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            with sl_col:
+                st.markdown(f"""
+                    <div class="trade-plan-item-card">
+                        <div class="trade-plan-item-header">🛑 وقف الخسارة</div>
+                        <div class="trade-plan-item-value">{format_price(result.get('stop_loss'))}</div>
+                        <div class="trade-plan-item-sub-value" style="color: #dc3545;">
+                            {loss_display}
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+            # --- نهاية الكود الجديد ---
 
             st.markdown("---")
             st.markdown("### 📊 المقاييس الأساسية")
