@@ -9,8 +9,6 @@ BACKEND_URL = "https://b6697ea5-cb9e-4031-abde-ec9d90eb52d0-00-c61ufn0y915m.worf
 
 # ------------------------------------------------------------
 # (جميع الدوال المساعدة الأخرى تبقى كما هي بدون أي تغيير)
-# get_instruments_from_backend, get_analysis_from_backend, 
-# format_price, calculate_pnl_percentages, trading_calculator_app
 # ------------------------------------------------------------
 @st.cache_data(ttl=3600)
 def get_instruments_from_backend():
@@ -107,15 +105,19 @@ def trading_calculator_app():
 
 
 def render_main_app():
-    # --- الكود الجديد: إعادة الخلفية والتصميم ---
+    # --- الكود الجديد: إعادة الخلفية والتصميم وإخفاء الشريط العلوي ---
     st.markdown("""
         <style>
+        /* إخفاء الشريط العلوي لـ Streamlit */
+        header { visibility: hidden; }
+        /* تطبيق الخلفية */
         .stApp {
             background-image: url("https://i.imgur.com/Utvjk6E.png");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
+        /* كل التنسيقات الأخرى من ملفك الأصلي */
         .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
         .card-header { font-size: 14px; color: #bbb; margin-bottom: 5px; }
         .card-value { font-size: 24px; font-weight: bold; color: white; }
@@ -149,11 +151,8 @@ def render_main_app():
     with col1:
         st.markdown("<h1 style='font-size: 2.5rem; font-weight: bold; margin: 0;'>🧠 Smart Money Scanner</h1>", unsafe_allow_html=True)
     with col2:
-        if st.button("رجوع إلى الخلف ↩️"):
-            st.session_state.show_welcome_page = True
-            st.session_state.analysis_triggered = False # إعادة تعيين الحالة
-            st.session_state.analysis_results = {}   # إعادة تعيين النتائج
-            st.rerun()
+        # زر الرجوع إلى الخلف غير ضروري الآن لأن المستخدم يسجل خروجه بدلاً من الرجوع
+        pass
 
     st.markdown(f"**آخر تحديث:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     st.markdown("---")
@@ -235,19 +234,36 @@ def render_main_app():
                 time_html_element = f"<br>⏱️ {est_time_display}" if est_time_display else ""
                 tp_col, entry_col, sl_col = st.columns(3)
                 with tp_col:
-                    st.markdown(f"""<div class="trade-plan-item-card">...</div>""") # أكمل الكود من ملفك
+                    st.markdown(f"""<div class="trade-plan-item-card"><div class="trade-plan-item-header">🎯 السعر المستهدف</div><div class="trade-plan-item-value">{format_price(result.get('take_profit'))}</div><div class="trade-plan-item-sub-value" style="color: #28a745;">{profit_display} {time_html_element}</div></div>""", unsafe_allow_html=True)
                 with entry_col:
-                    st.markdown(f"""<div class="trade-plan-item-card" style="border: 2px solid #007bff;">...</div>""") # أكمل الكود من ملفك
+                    st.markdown(f"""<div class="trade-plan-item-card" style="border: 2px solid #007bff;"><div class="trade-plan-item-header">📈 سعر الدخول</div><div class="trade-plan-item-value">{format_price(result.get('entry'))}</div><div class="trade-plan-item-sub-value">&nbsp;</div></div>""", unsafe_allow_html=True)
                 with sl_col:
-                    st.markdown(f"""<div class="trade-plan-item-card">...</div>""") # أكمل الكود من ملفك
+                    st.markdown(f"""<div class="trade-plan-item-card"><div class="trade-plan-item-header">🛑 وقف الخسارة</div><div class="trade-plan-item-value">{format_price(result.get('stop_loss'))}</div><div class="trade-plan-item-sub-value" style="color: #dc3545;">{loss_display}</div></div>""", unsafe_allow_html=True)
                 
                 st.markdown("---")
                 st.markdown("### 📊 المقاييس الأساسية")
-                # ... (كود عرض المقاييس) ...
-
+                metrics_data = result.get("metrics", {})
+                weights_data = result.get("weights", {})
+                icons = {"funding":"💰", "oi":"📊", "cvd":"📈", "orderbook":"⚖️", "backtest":"🧪", "ema_cross": "📈"}
+                available_metrics = {k:v for k,v in metrics_data.items() if v is not None}
+                if available_metrics:
+                    cols_metrics = st.columns(len(available_metrics))
+                    for idx, (k, score) in enumerate(available_metrics.items()):
+                        with cols_metrics[idx]:
+                            weight = weights_data.get(k)
+                            weight_display = f"w={weight:.2f}" if weight is not None else ""
+                            label_map = {"funding": "التمويل", "oi": "OI", "cvd": "CVD", "orderbook": "الطلبات", "backtest": "الاختبار الخلفي", "ema_cross": "EMA"}
+                            st.metric(label=f"{icons.get(k, '⚙️')} {label_map.get(k, k.title())}", value=f"{score:.3f}", delta=weight_display)
+                else:
+                    st.info("لا توجد بيانات مقاييس لعرضها.")
+                
                 st.markdown("---")
                 st.markdown("### 🔍 تحليل إضافي")
-                # ... (كود عرض التحليل الإضافي) ...
+                raw_data = result.get('raw', {})
+                st.markdown(f"• **الدعم:** {format_price(raw_data.get('support'))} | **المقاومة:** {format_price(raw_data.get('resistance'))}")
+                st.markdown(f"• **حالة السوق:** {raw_data.get('market_regime', 'N/A')} (ADX: {raw_data.get('adx', 'N/A')})")
+                if st.checkbox("عرض البيانات الخام للشفافية"):
+                    st.json(result)
             
             else:
                 # --- رسالة للمستخدمين العاديين للترقية ---
