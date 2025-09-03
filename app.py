@@ -46,14 +46,30 @@ if st.session_state.get("authentication_status"):
             menu_title=None,
             options=["ملفي الشخصي", "تسجيل الخروج"],
             icons=['person-circle', 'box-arrow-right'],
-            menu_icon="cast",
+            menu_icon="cast", # يمكن تغيير هذا الرمز العام للقائمة إذا أردت
             default_index=0,
             orientation="horizontal",
             styles={
-                "container": {"padding": "0!important", "background-color": "transparent"},
-                "icon": {"color": "white", "font-size": "18px"}, 
-                "nav-link": {"font-size": "16px", "text-align": "center", "margin":"0px", "--hover-color": "#333"},
-                "nav-link-selected": {"background-color": "#02ab21"},
+                "container": {"padding": "0!important", "background-color": "transparent", "justify-content": "flex-end"},
+                "icon": {"color": "#bbbbbb", "font-size": "18px"}, # لون أيقونات عام
+                "nav-link": {
+                    "font-size": "16px",
+                    "text-align": "center",
+                    "margin": "0px 5px", # مسافة بين الأزرار
+                    "--hover-color": "#2a2a2a", # لون الخلفية عند الوقوف بالماوس
+                    "color": "#e0e0e0", # لون النص العام
+                    "background-color": "#1a1a1a", # خلفية الأزرار العادية
+                    "border-radius": "8px", # حواف مستديرة
+                    "padding": "8px 15px", # مسافة داخلية
+                    "transition": "background-color 0.3s, color 0.3s" # انتقال سلس
+                },
+                "nav-link-selected": {
+                    "background-color": "#007bff", # اللون الأزرق الذي تستخدمه في أماكن أخرى
+                    "color": "white", # نص أبيض
+                    "font-weight": "bold",
+                    "border-radius": "8px",
+                },
+                # يمكن إضافة المزيد من التعديلات هنا
             }
         )
     
@@ -62,7 +78,6 @@ if st.session_state.get("authentication_status"):
         authenticator.logout('تسجيل الخروج', 'main')
         st.rerun()
     elif selected_option == "ملفي الشخصي":
-        # --- هذا هو السطر الذي تمت إعادته ---
         st.toast("سيتم إضافة صفحة الملف الشخصي قريبًا!", icon="⏳")
 
     # عرض التطبيق الرئيسي
