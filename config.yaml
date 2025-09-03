@@ -12,6 +12,3 @@ cookie:
   expiry_days: 30
   key: "a_random_secret_key_123"
   name: signal_prime_cookie
-preauthorized:
-  emails:
-  - mels@gmail.com
