@@ -12,20 +12,19 @@ header, footer {
 .floating-icons img {
     position: absolute;
     bottom: -150px;
-    opacity: 0.2; /* تقليل الشفافية قليلاً لتجنب التشتيت */
-    animation: float-up 18s infinite linear; /* تقليل المدة لزيادة السرعة */
-    filter: grayscale(80%); /* لجعلها أقل إزعاجاً بصرياً */
+    opacity: 0.4; /* زيادة الشفافية قليلاً لتظهر الألوان أفضل */
+    animation: float-up 18s infinite linear; /* سرعة الحركة */
+    filter: grayscale(0%); /* إزالة التأثير الرمادي لإعادة الألوان */
     transition: transform 0.5s ease-out; /* حركة أكثر سلاسة عند الظهور */
 }
 
 @keyframes float-up {
-    0%   { transform: translateY(0) translateX(0) rotate(0deg) scale(0.8); opacity: 0.2; }
-    50%  { opacity: 0.5; } /* تظهر وتتلاشى بشكل طبيعي */
+    0%   { transform: translateY(0) translateX(0) rotate(0deg) scale(0.8); opacity: 0.4; }
+    50%  { opacity: 0.7; } /* تظهر وتتلاشى بشكل طبيعي وتكون أكثر وضوحاً في المنتصف */
     100% { transform: translateY(-120vh) translateX(var(--x-offset, 0px)) rotate(360deg) scale(1.2); opacity: 0; }
 }
 
 /* 32 أيقونة بحركات وأحجام وسرعات مختلفة وتوزيع عشوائي */
-/* تم تعديل animation-duration (مدة الحركة) لتبدو أسرع وأكثر حيوية */
 .floating-icons img:nth-child(1)  { left: 5%;   width: 80px; animation-delay: 0s;  animation-duration: 20s; --x-offset: 50px;}
 .floating-icons img:nth-child(2)  { left: 15%;  width: 40px; animation-delay: 2s;  animation-duration: 25s; --x-offset: -30px;}
 .floating-icons img:nth-child(3)  { left: 25%;  width: 60px; animation-delay: 4s;  animation-duration: 22s; --x-offset: 70px;}
@@ -88,6 +87,7 @@ header, footer {
 .main-app-container .stButton>button:hover {
     background-image: linear-gradient(to right, #0056b3, #007bff);
     transform: scale(1.03);
+    box-shadow: 0 0 10px #007bff, 0 0 20px #007bff; /* إضافة بريق للأزرار العادية */
 }
 
 /* تنسيق خاص بزر الإطلاق في الصفحة الترحيبية */
