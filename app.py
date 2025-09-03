@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# --- Load user credentials ---
+# --- تحميل إعدادات المستخدمين ---
 try:
     with open('config.yaml') as file:
         config = yaml.load(file, Loader=SafeLoader)
@@ -20,7 +20,7 @@ except FileNotFoundError:
     st.error("Error: The 'config.yaml' file was not found. Please create it.")
     st.stop()
 
-# --- Initialize the authenticator ---
+# --- تهيئة أداة المصادقة ---
 authenticator = stauth.Authenticate(
     config['credentials'],
     config['cookie']['name'],
@@ -28,29 +28,31 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-# --- Render the login module ---
-# The location is now correctly passed as a keyword argument 'location'
-name, authentication_status, username = authenticator.login(location='sidebar')
+# --- التحقق من حالة تسجيل الدخول أولاً ---
+if 'authentication_status' not in st.session_state:
+    st.session_state['authentication_status'] = None
 
-# --- Check the authentication status ---
+# --- المنطق الجديد والمُصحح ---
 if st.session_state["authentication_status"]:
-    # --- State: Successful login ---
-    
-    # Hide the sidebar navigation and show the logout button
-    st.markdown("<style>div[data-testid='stSidebarNav'] {display: none;}</style>", unsafe_allow_html=True)
+    # --- الحالة: تسجيل الدخول ناجح ---
     with st.sidebar:
-        st.write(f'Welcome *{st.session_state["name"]}*')
-        authenticator.logout('Logout', 'main')
+        st.write(f'أهلاً بك *{st.session_state["name"]}*')
+        authenticator.logout('تسجيل الخروج', 'main')
     
-    # Render the main analysis app
     render_main_app()
     
-elif st.session_state["authentication_status"] is False:
-    # --- State: Incorrect password/username ---
-    with st.sidebar:
-        st.error('Username/password is incorrect')
-    render_welcome_page()
+else:
+    # --- الحالة: لم يتم تسجيل الدخول بعد أو فشل الدخول ---
+    # اعرض نموذج تسجيل الدخول في الشريط الجانبي
+    try:
+        name, authentication_status, username = authenticator.login('Login', 'sidebar')
+        
+        if st.session_state["authentication_status"] is False:
+            with st.sidebar:
+                st.error('اسم المستخدم أو كلمة المرور غير صحيحة')
+        
+        # اعرض الصفحة الترحيبية دائمًا إذا لم يكن المستخدم قد سجل دخوله
+        render_welcome_page()
 
-elif st.session_state["authentication_status"] is None:
-    # --- State: No login attempt yet ---
-    render_welcome_page()
+    except Exception as e:
+        st.error(e)
