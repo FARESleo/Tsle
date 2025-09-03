@@ -8,31 +8,27 @@ st.set_page_config(
     layout="wide",
 )
 
+# دالة لتحميل CSS من ملف خارجي
+def load_css(file_name):
+    try:
+        with open(file_name) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    except FileNotFoundError:
+        st.error(f"خطأ: لم يتم العثور على ملف التصميم '{file_name}'. تأكد من وجوده في نفس المجلد.")
+
+
+# --- تحميل ملف CSS المركزي ---
+load_css("style.css")
+
 if 'show_welcome_page' not in st.session_state:
     st.session_state.show_welcome_page = True
 
-# --- CSS بسيط ومستقر ---
+# عرض الصفحة المناسبة وتطبيق الـ class الخاص بالخلفية
 if st.session_state.show_welcome_page:
-    # لا حاجة لأي CSS هنا، كل التصميم موجود في welcome_page.py
-    pass
-else:
-    # --- CSS العادي للصفحة الرئيسية ---
-    background_url = "https://i.imgur.com/Utvjk6E.png"
-    css = f"""
-        <style>
-        header, footer {{ visibility: hidden; }}
-        .stApp {{
-            background-image: url("{background_url}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }}
-        </style>
-    """
-    st.markdown(css, unsafe_allow_html=True)
-
-# عرض الصفحة المناسبة
-if st.session_state.show_welcome_page:
+    st.markdown('<div class="welcome-page-container">', unsafe_allow_html=True)
     render_welcome_page()
+    st.markdown('</div>', unsafe_allow_html=True)
 else:
+    st.markdown('<div class="main-app-container">', unsafe_allow_html=True)
     render_main_app()
+    st.markdown('</div>', unsafe_allow_html=True)
