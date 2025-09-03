@@ -3,11 +3,13 @@ credentials:
     jsmith:
       email: jsmith@gmail.com
       name: John Smith
-      password: '$2b$12$.bHFPpJ9GWqF5V342Jxuqe03Rh9eYYCndXuJuPh24LICZXQXTs4zS' # التشفير الصحيح لكلمة pass123
+      password: '$2b$12$.bHFPpJ9GWqF5V342Jxuqe03Rh9eYYCndXuJuPh24LICZXQXTs4zS'
+      subscription: "PRO"  # <--- مستخدم مميز
     rhendricks:
       email: rhendricks@gmail.com
       name: Richard Hendricks
-      password: '$2b$12$ov6K09j0pGVbiMmvTgAwv.Tq5bdvTneX6zd5YzDZ7dkKNJs0v9NCq' # التشفير الصحيح لكلمة def456
+      password: '$2b$12$ov6K09j0pGVbiMmvTgAwv.Tq5bdvTneX6zd5YzDZ7dkKNJs0v9NCq'
+      subscription: "Free"  # <--- مستخدم عادي
 cookie:
   expiry_days: 30
   key: "a_random_secret_key_123"
