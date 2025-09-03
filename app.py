@@ -1,5 +1,6 @@
 import streamlit as st
-from main-app import render_main_app
+# تم تصحيح اسم الملف هنا من main-app إلى main_app
+from main_app import render_main_app 
 from welcome_page import render_welcome_page
 
 st.set_page_config(
