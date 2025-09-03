@@ -1,0 +1,17 @@
+credentials:
+  usernames:
+    jsmith:
+      email: jsmith@gmail.com
+      name: John Smith
+      password: 'pass123' # سنقوم بتشفير هذا لاحقًا
+    rhendricks:
+      email: rhendricks@gmail.com
+      name: Richard Hendricks
+      password: 'def456' # وهذا أيضًا
+cookie:
+  expiry_days: 30
+  key: "a_random_secret_key_123" # غيّر هذا إلى أي نص عشوائي
+  name: signal_prime_cookie
+preauthorized:
+  emails:
+  - mels@gmail.com
