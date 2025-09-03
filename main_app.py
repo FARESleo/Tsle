@@ -1,4 +1,3 @@
-# main_app.py (النسخة النهائية الكاملة)
 import streamlit as st
 import pandas as pd
 from math import isnan
@@ -108,70 +107,11 @@ def trading_calculator_app():
                 st.metric("نسبة الربح مقابل المخاطرة (R:R)", f"{rr_ratio:.2f}x")
 
 def render_main_app():
-    # كود التصميم والتنسيق
-    st.markdown("""
-        <style>
-        .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
-        .card-header { font-size: 14px; color: #bbb; margin-bottom: 5px; }
-        .card-value { font-size: 24px; font-weight: bold; color: white; }
-        .progress-bar-container { background-color: #333; border-radius: 5px; height: 10px; margin-top: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; transition: width 0.5s ease-in-out; }
-        .trade-plan-card { background-color: #1e1e1e; border-radius: 10px; padding: 20px; border: 1px solid #333; margin-top: 20px; }
-        .trade-plan-title { font-size: 20px; font-weight: bold; color: #007bff; margin-bottom: 15px; text-align: center; }
-        .reason-card { background-color: #2a2a2a; border-radius: 8px; padding: 15px; border-left: 5px solid; margin-bottom: 20px; }
-        .reason-card.bullish { border-color: #28a745; }
-        .reason-card.bearish { border-color: #dc3545; }
-        .reason-card.neutral { border-color: #ffc107; }
-        .reason-text { font-size: 18px; color: white; }
-        .stButton>button { border-radius: 50px; background-image: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; border: none; }
-        .stButton>button:hover { background-image: linear-gradient(to right, #0056b3, #007bff); }
-        .stMetric { background-color: #1e1e1e; border-radius: 10px; padding: 10px; text-align: center; }
-
-        /* تعديل لضمان بقاء لون النص أبيضًا دائمًا داخل st.metric */
-        .stMetric > label[data-testid="stMetricLabel"] {
-            color: #bbb; /* لون رمادي فاتح للعنوان */
-        }
-        .stMetric > div[data-testid="stMetricValue"] {
-            color: white; /* لون أبيض ساطع للقيمة الرئيسية */
-        }
-        .stMetric > div[data-testid="stMetricDelta"] {
-            color: rgba(255, 255, 255, 0.75); /* لون أبيض باهت قليلًا للوزن */
-        }
-
-        /* الأنماط الجديدة لبطاقات خطة التداول */
-        .trade-plan-item-card {
-            background-color: #2a2a2a;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #444;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .trade-plan-item-header {
-            font-size: 15px;
-            color: #bbb;
-            margin-bottom: 8px;
-        }
-        .trade-plan-item-value {
-            font-size: 22px;
-            font-weight: bold;
-            color: white;
-            word-wrap: break-word;
-        }
-        .trade-plan-item-sub-value {
-            font-size: 14px;
-            margin-top: 5px;
-            min-height: 20px; /* لضمان تساوي ارتفاع البطاقات */
-        }
-        </style>
-        """, unsafe_allow_html=True)
-    
-    if 'analysis_results' not in st.session_state: st.session_state.analysis_results = {}
-    if 'last_instId' not in st.session_state: st.session_state.last_instId = ""
-    if 'last_bar' not in st.session_state: st.session_state.last_bar = ""
+    # إدارة الحالة
+    if 'analysis_results' not in st.session_state:
+        st.session_state.analysis_results = {}
+    if 'analysis_triggered' not in st.session_state:
+        st.session_state.analysis_triggered = False
     
     col1, col2 = st.columns([0.85, 0.15])
     with col1:
@@ -179,6 +119,8 @@ def render_main_app():
     with col2:
         if st.button("رجوع إلى الخلف ↩️"):
             st.session_state.show_welcome_page = True
+            st.session_state.analysis_triggered = False # إعادة تعيين الحالة
+            st.session_state.analysis_results = {}   # إعادة تعيين النتائج
             st.rerun()
 
     st.markdown(f"**آخر تحديث:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -197,23 +139,28 @@ def render_main_app():
         bar = st.selectbox("الإطار الزمني", timeframes, index=2)
 
         if st.button("🚀 ابدأ التحليل!", use_container_width=True):
-            st.session_state.analysis_in_progress = True
-            
-        if st.session_state.get('analysis_in_progress', False):
+            st.session_state.analysis_triggered = True
+            st.session_state.analysis_results = {} # مسح النتائج القديمة لعرض رسالة التحميل
+            st.rerun()
+
+        # عرض رسالة التحميل إذا تم الضغط على الزر ولم تظهر النتائج بعد
+        if st.session_state.analysis_triggered and not st.session_state.analysis_results:
             with st.spinner("...جارٍ الاتصال بالخادم وتنفيذ التحليل"):
                 result = get_analysis_from_backend(selected_instId, bar)
                 st.session_state.analysis_results = result
-                st.session_state.analysis_in_progress = False
-        
+                st.session_state.analysis_triggered = False # إيقاف حالة التشغيل
+                st.rerun()
+
         result = st.session_state.analysis_results
 
-        if not isinstance(result, dict) or not result:
+        if not result:
             st.info("💡 الرجاء تحديد أداة وإطار زمني ثم الضغط على 'ابدأ التحليل!'")
         elif 'error' in result:
             st.error(f"حدث خطأ: {result['error']}")
         elif 'recommendation' not in result:
-             st.info("❌ لا توجد بيانات متاحة للعرض. الرجاء الضغط 'ابدأ التحليل!'")
+             st.info("❌ لا توجد بيانات متاحة للعرض. قد يكون السوق هادئًا. حاول مرة أخرى لاحقًا.")
         else:
+            # (الكود المتبقي لعرض النتائج يبقى كما هو)
             def get_confidence_color(pct):
                 if pct is None or isnan(pct): return "gray"
                 if pct <= 40: return "red"
@@ -315,6 +262,3 @@ def render_main_app():
 
     elif selected_page == "🧮 الحاسبة":
         trading_calculator_app()
-
-if __name__ == "__main__":
-    render_main_app()
