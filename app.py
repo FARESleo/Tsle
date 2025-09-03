@@ -4,7 +4,6 @@ from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
 
 # -- استيراد الدوال من ملفاتك --
-# تأكد من أن اسم الملف هو main_app.py (مع شرطة سفلية)
 from main_app import render_main_app
 from welcome_page import render_welcome_page
 
@@ -22,8 +21,7 @@ except FileNotFoundError:
     st.error("خطأ: لم يتم العثور على ملف الإعدادات 'config.yaml'.")
     st.stop()
 
-
-# --- تهيئة أداة المصادقة ---
+# --- تهيئة أداة المصادقة (بدون preauthorized) ---
 authenticator = stauth.Authenticate(
     config['credentials'],
     config['cookie']['name'],
@@ -32,11 +30,9 @@ authenticator = stauth.Authenticate(
 )
 
 # --- عرض نموذج تسجيل الدخول ---
-# هذا السطر سيعرض حقول اسم المستخدم وكلمة المرور
-name, authentication_status, username = authenticator.login('main')
+authenticator.login('main')
 
-
-# --- التحقق من حالة تسجيل الدخول ---
+# --- التحقق من حالة تسجيل الدخول (الطريقة الصحيحة) ---
 
 if st.session_state["authentication_status"]:
     # --- الحالة: تسجيل الدخول ناجح ---
@@ -53,8 +49,14 @@ if st.session_state["authentication_status"]:
 elif st.session_state["authentication_status"] is False:
     # --- الحالة: خطأ في تسجيل الدخول ---
     st.error('اسم المستخدم أو كلمة المرور غير صحيحة')
-    render_welcome_page() # نعرض الصفحة الترحيبية مرة أخرى
+    try:
+        render_welcome_page()
+    except Exception as e:
+        st.error(e)
 
 elif st.session_state["authentication_status"] is None:
     # --- الحالة: لم يتم تسجيل الدخول بعد ---
-    render_welcome_page()
+    try:
+        render_welcome_page()
+    except Exception as e:
+        st.error(e)
