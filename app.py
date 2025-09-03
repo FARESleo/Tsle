@@ -2,7 +2,7 @@ import streamlit as st
 import yaml
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
-from streamlit_option_menu import option_menu # --- استيراد المكتبة الجديدة ---
+from streamlit_option_menu import option_menu
 
 from main_app import render_main_app
 from welcome_page import render_welcome_page
@@ -40,13 +40,12 @@ if st.session_state.get("authentication_status"):
     # --- نهاية الكود الجديد ---
 
     # --- القائمة الجديدة للمستخدم ---
-    # وضع القائمة داخل أعمدة لوضعها في أقصى اليمين
     _, col2 = st.columns([6, 1])
     with col2:
         selected_option = option_menu(
-            menu_title=None, # لا نريد عنوانًا للقائمة
+            menu_title=None,
             options=["ملفي الشخصي", "تسجيل الخروج"],
-            icons=['person-circle', 'box-arrow-right'], # أيقونات جميلة
+            icons=['person-circle', 'box-arrow-right'],
             menu_icon="cast",
             default_index=0,
             orientation="horizontal",
@@ -63,8 +62,8 @@ if st.session_state.get("authentication_status"):
         authenticator.logout('تسجيل الخروج', 'main')
         st.rerun()
     elif selected_option == "ملفي الشخصي":
-        # يمكنك هنا إضافة صفحة خاصة بملف المستخدم في المستقبل
-        st.toast("سيتم إضافة صفحة الملف الشخصي قريبًا!")
+        # --- هذا هو السطر الذي تمت إعادته ---
+        st.toast("سيتم إضافة صفحة الملف الشخصي قريبًا!", icon="⏳")
 
     # عرض التطبيق الرئيسي
     render_main_app()
