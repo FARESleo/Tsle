@@ -17,7 +17,7 @@ try:
     with open('config.yaml') as file:
         config = yaml.load(file, Loader=SafeLoader)
 except FileNotFoundError:
-    st.error("Error: The 'config.yaml' file was not found. Please create it.")
+    st.error("Error: The 'config.yaml' file was not found.")
     st.stop()
 
 # --- تهيئة أداة المصادقة ---
@@ -28,33 +28,13 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-# --- عرض نموذج تسجيل الدخول في الشريط الجانبي ---
-# هذه الدالة تقوم بعرض النموذج وتحديث حالة الدخول داخليًا
-authenticator.login(location='sidebar')
-
-# --- التحقق من حالة الدخول من st.session_state ---
-
-if st.session_state["authentication_status"]:
-    # --- الحالة: تسجيل الدخول ناجح ---
-    
-    # عرض زر الخروج في الشريط الجانبي
+# --- المنطق النهائي للتحكم في العرض ---
+if st.session_state.get("authentication_status"):
+    # إذا نجح تسجيل الدخول، اعرض التطبيق الرئيسي
+    render_main_app()
     with st.sidebar:
         st.write(f'أهلاً بك *{st.session_state["name"]}*')
-        authenticator.logout(button_name='تسجيل الخروج', location='main')
-    
-    # عرض التطبيق الرئيسي للتحليلات
-    render_main_app()
-    
-elif st.session_state["authentication_status"] is False:
-    # --- الحالة: خطأ في تسجيل الدخول ---
-    with st.sidebar:
-        st.error('اسم المستخدم أو كلمة المرور غير صحيحة')
-    # عرض الصفحة الترحيبية
-    render_welcome_page()
-
-elif st.session_state["authentication_status"] is None:
-    # --- الحالة: لم يتم تسجيل الدخول بعد ---
-    with st.sidebar:
-        st.info('الرجاء تسجيل الدخول للوصول إلى الماسح الضوئي.')
-    # عرض الصفحة الترحيبية
-    render_welcome_page()
+        authenticator.logout('تسجيل الخروج', 'main')
+else:
+    # إذا لم يسجل دخوله، اعرض الصفحة الترحيبية ومرر لها أداة المصادقة
+    render_welcome_page(authenticator)
