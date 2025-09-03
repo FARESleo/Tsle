@@ -4,7 +4,12 @@ from math import isnan
 from datetime import datetime
 import requests
 
-# --- (جميع الدوال المساعدة الأخرى تبقى كما هي بدون أي تغيير) ---
+# --- إعدادات الاتصال بالـ Backend ---
+BACKEND_URL = "https://b6697ea5-cb9e-4031-abde-ec9d90eb52d0-00-c61ufn0y915m.worf.replit.dev"
+
+# ------------------------------------------------------------
+# (جميع الدوال المساعدة الأخرى تبقى كما هي بدون أي تغيير)
+# ------------------------------------------------------------
 @st.cache_data(ttl=3600)
 def get_instruments_from_backend():
     try:
@@ -49,13 +54,16 @@ def format_price(price, decimals=None):
 def calculate_pnl_percentages(entry_price, take_profit, stop_loss):
     if entry_price is None or take_profit is None or stop_loss is None or entry_price == 0:
         return None, None
+    
     is_long = take_profit > entry_price
+    
     if is_long:
         profit_pct = ((take_profit - entry_price) / entry_price) * 100
         loss_pct = ((stop_loss - entry_price) / entry_price) * 100
     else:
         profit_pct = ((entry_price - take_profit) / entry_price) * 100
         loss_pct = ((entry_price - stop_loss) / entry_price) * 100
+        
     return profit_pct, loss_pct
 
 def trading_calculator_app():
@@ -95,17 +103,21 @@ def trading_calculator_app():
                 st.metric("الربح المتوقع", f"{profit_amount:,.2f} $")
                 st.metric("نسبة الربح مقابل المخاطرة (R:R)", f"{rr_ratio:.2f}x")
 
+
 def render_main_app():
-    # --- إعادة الخلفية والتصميم وإخفاء الشريط العلوي ---
+    # --- الكود الجديد: إعادة الخلفية والتصميم وإخفاء الشريط العلوي ---
     st.markdown("""
         <style>
+        /* إخفاء الشريط العلوي لـ Streamlit */
         header { visibility: hidden; }
+        /* تطبيق الخلفية */
         .stApp {
             background-image: url("https://i.imgur.com/Utvjk6E.png");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
+        /* كل التنسيقات الأخرى من ملفك الأصلي */
         .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
         .card-header { font-size: 14px; color: #bbb; margin-bottom: 5px; }
         .card-value { font-size: 24px; font-weight: bold; color: white; }
@@ -127,6 +139,7 @@ def render_main_app():
         .trade-plan-item-sub-value { font-size: 14px; margin-top: 5px; min-height: 20px; }
         </style>
     """, unsafe_allow_html=True)
+    # --- نهاية الكود الجديد ---
 
     # إدارة الحالة
     if 'analysis_results' not in st.session_state:
@@ -134,14 +147,19 @@ def render_main_app():
     if 'analysis_triggered' not in st.session_state:
         st.session_state.analysis_triggered = False
     
-    st.markdown("<h1 style='font-size: 2.5rem; font-weight: bold; margin: 0; padding-top: 1rem;'>🧠 Smart Money Scanner</h1>", unsafe_allow_html=True)
+    col1, col2 = st.columns([0.85, 0.15])
+    with col1:
+        st.markdown("<h1 style='font-size: 2.5rem; font-weight: bold; margin: 0;'>🧠 Smart Money Scanner</h1>", unsafe_allow_html=True)
+    with col2:
+        # زر الرجوع إلى الخلف غير ضروري الآن لأن المستخدم يسجل خروجه بدلاً من الرجوع
+        pass
+
     st.markdown(f"**آخر تحديث:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     st.markdown("---")
     
     selected_page = st.radio("Go to", ["📊 التحليل", "🧮 الحاسبة"], horizontal=True, label_visibility="collapsed")
 
     if selected_page == "📊 التحليل":
-        # ... (بقية الكود الخاص بك يبقى كما هو حتى تصل إلى قسم عرض النتائج)
         all_instruments = get_instruments_from_backend()
         if not all_instruments:
             st.error("فشل في تحميل قائمة العملات. تأكد من أن الخادم الخلفي (Backend) يعمل.")
@@ -190,6 +208,7 @@ def render_main_app():
                 if confidence_pct >= 75: st.success("🎉 إشارة قوية تم اكتشافها!", icon="🔥")
                 elif confidence_pct <= 25: st.warning("⚠️ إشارة ضعيفة. يفضل توخي الحذر.")
 
+            # --- هذا الجزء يراه جميع المستخدمين ---
             cols = st.columns(3)
             with cols[0]:
                 st.markdown(f"""<div class="custom-card"><div class="card-header">📊 الثقة</div><div class="card-value">{confidence_pct:.1f}%</div><div class="progress-bar-container"><div class="progress-bar" style="width:{progress_width}%; background-color:{confidence_color};"></div></div></div>""", unsafe_allow_html=True)
@@ -198,7 +217,9 @@ def render_main_app():
             with cols[2]:
                 st.markdown(f"""<div class="custom-card"><div class="card-header">📈 سعر الدخول</div><div class="card-value">{format_price(result.get('entry'))}</div></div>""", unsafe_allow_html=True)
 
+            # --- الكود الجديد: التحقق من اشتراك PRO ---
             if st.session_state.get("subscription") == "PRO":
+                # --- هذا الجزء يراه فقط مشتركو PRO ---
                 st.markdown("---")
                 reason_text = result.get('reason', 'N/A')
                 reason_class = "neutral"
@@ -211,7 +232,6 @@ def render_main_app():
                 loss_display = f"({loss_pct:.2f}%)" if loss_pct is not None else ""
                 est_time_display = result.get("est_time_to_target", "")
                 time_html_element = f"<br>⏱️ {est_time_display}" if est_time_display else ""
-
                 tp_col, entry_col, sl_col = st.columns(3)
                 with tp_col:
                     st.markdown(f"""<div class="trade-plan-item-card"><div class="trade-plan-item-header">🎯 السعر المستهدف</div><div class="trade-plan-item-value">{format_price(result.get('take_profit'))}</div><div class="trade-plan-item-sub-value" style="color: #28a745;">{profit_display} {time_html_element}</div></div>""", unsafe_allow_html=True)
@@ -246,10 +266,12 @@ def render_main_app():
                     st.json(result)
             
             else:
+                # --- رسالة للمستخدمين العاديين للترقية ---
                 st.markdown("---")
                 st.success("✨ للوصول إلى خطة التداول الكاملة والمقاييس المتقدمة، قم بالترقية إلى PRO!", icon="🚀")
                 if st.button("الترقية إلى PRO الآن"):
                     st.balloons()
+            # --- نهاية الكود الجديد ---
 
     elif selected_page == "🧮 الحاسبة":
         trading_calculator_app()
