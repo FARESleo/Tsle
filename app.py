@@ -35,7 +35,6 @@ if st.session_state.get("authentication_status"):
         user_details = config['credentials']['usernames'][st.session_state['username']]
         st.session_state['subscription'] = user_details.get('subscription', 'Free')
     except KeyError:
-        # حالة احتياطية إذا لم يتم العثور على المستخدم
         st.session_state['subscription'] = 'Free'
     # --- نهاية الكود الجديد ---
 
