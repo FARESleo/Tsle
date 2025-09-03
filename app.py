@@ -1,29 +1,40 @@
 import streamlit as st
-import bcrypt
+import yaml
+from yaml.loader import SafeLoader
+import streamlit_authenticator as stauth
+
+from main_app import render_main_app
+from welcome_page import render_welcome_page
 
 st.set_page_config(
-    page_title="Password Hasher",
-    page_icon="🔑",
-    layout="centered",
+    page_title="Signal Prime | Smart Money Scanner",
+    page_icon="🧠",
+    layout="wide",
 )
 
-st.title("أداة تشفير كلمات المرور (النهائية)")
-st.write("استخدم هذه الأداة مرة واحدة فقط للحصول على التشفير الصحيح.")
+# --- تحميل إعدادات المستخدمين ---
+try:
+    with open('config.yaml') as file:
+        config = yaml.load(file, Loader=SafeLoader)
+except FileNotFoundError:
+    st.error("Error: The 'config.yaml' file was not found.")
+    st.stop()
 
-password_input = st.text_input("أدخل كلمة المرور التي تريد تشفيرها", type="password")
+# --- تهيئة أداة المصادقة ---
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days']
+)
 
-if st.button("تشفير", use_container_width=True):
-    if password_input:
-        try:
-            # تشفير كلمة المرور باستخدام مكتبة bcrypt الأساسية
-            password_bytes = password_input.encode('utf-8')
-            hashed_bytes = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-            hashed_password_str = hashed_bytes.decode('utf-8')
-
-            st.success("تم التشفير بنجاح!")
-            st.code(hashed_password_str, language=None)
-            st.info("انسخ هذا النص المشفر بالكامل واستخدمه في ملف config.yaml")
-        except Exception as e:
-            st.error(f"حدث خطأ: {e}")
-    else:
-        st.warning("الرجاء إدخال كلمة مرور.")
+# --- المنطق النهائي للتحكم في العرض ---
+if st.session_state.get("authentication_status"):
+    # إذا نجح تسجيل الدخول، اعرض التطبيق الرئيسي
+    render_main_app()
+    with st.sidebar:
+        st.write(f'أهلاً بك *{st.session_state["name"]}*')
+        authenticator.logout('تسجيل الخروج', 'main')
+else:
+    # إذا لم يسجل دخوله، اعرض الصفحة الترحيبية ومرر لها أداة المصادقة
+    render_welcome_page(authenticator)
