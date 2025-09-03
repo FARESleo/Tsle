@@ -3,24 +3,61 @@ header, footer {
     visibility: hidden;
 }
 
-/* --- Welcome Page Specific Styles (بدون الخلفية) --- */
+/* --- Welcome Page Specific Styles --- */
 .floating-icons {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     z-index: 1; pointer-events: none;
+    perspective: 1000px; /* تحسين تأثير الـ 3D لبعض الحركات */
 }
 .floating-icons img {
     position: absolute;
     bottom: -150px;
-    opacity: 0.25;
-    animation: float-up 25s infinite linear;
-}
-@keyframes float-up {
-    to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    opacity: 0.2; /* تقليل الشفافية قليلاً لتجنب التشتيت */
+    animation: float-up 18s infinite linear; /* تقليل المدة لزيادة السرعة */
+    filter: grayscale(80%); /* لجعلها أقل إزعاجاً بصرياً */
+    transition: transform 0.5s ease-out; /* حركة أكثر سلاسة عند الظهور */
 }
 
-/* ... (جميع تنسيقات الأيقونات الـ 32 تبقى كما هي) ... */
-.floating-icons img:nth-child(1)  { left: 5%; width: 80px; animation-delay: 0s; }
-.floating-icons img:nth-child(32) { left: 3%; width: 40px; animation-delay: 70s; }
+@keyframes float-up {
+    0%   { transform: translateY(0) translateX(0) rotate(0deg) scale(0.8); opacity: 0.2; }
+    50%  { opacity: 0.5; } /* تظهر وتتلاشى بشكل طبيعي */
+    100% { transform: translateY(-120vh) translateX(var(--x-offset, 0px)) rotate(360deg) scale(1.2); opacity: 0; }
+}
+
+/* 32 أيقونة بحركات وأحجام وسرعات مختلفة وتوزيع عشوائي */
+/* تم تعديل animation-duration (مدة الحركة) لتبدو أسرع وأكثر حيوية */
+.floating-icons img:nth-child(1)  { left: 5%;   width: 80px; animation-delay: 0s;  animation-duration: 20s; --x-offset: 50px;}
+.floating-icons img:nth-child(2)  { left: 15%;  width: 40px; animation-delay: 2s;  animation-duration: 25s; --x-offset: -30px;}
+.floating-icons img:nth-child(3)  { left: 25%;  width: 60px; animation-delay: 4s;  animation-duration: 22s; --x-offset: 70px;}
+.floating-icons img:nth-child(4)  { left: 40%;  width: 90px; animation-delay: 1s;  animation-duration: 18s; --x-offset: -40px;}
+.floating-icons img:nth-child(5)  { left: 60%;  width: 50px; animation-delay: 6s;  animation-duration: 28s; --x-offset: 20px;}
+.floating-icons img:nth-child(6)  { left: 75%;  width: 70px; animation-delay: 3s;  animation-duration: 21s; --x-offset: -60px;}
+.floating-icons img:nth-child(7)  { left: 90%;  width: 45px; animation-delay: 5s;  animation-duration: 26s; --x-offset: 80px;}
+.floating-icons img:nth-child(8)  { left: 80%;  width: 65px; animation-delay: 8s;  animation-duration: 19s; --x-offset: -50px;}
+.floating-icons img:nth-child(9)  { left: 30%;  width: 55px; animation-delay: 10s; animation-duration: 23s; --x-offset: 30px;}
+.floating-icons img:nth-child(10) { left: 70%;  width: 85px; animation-delay: 7s;  animation-duration: 17s; --x-offset: -70px;}
+.floating-icons img:nth-child(11) { left: 10%;  width: 40px; animation-delay: 12s; animation-duration: 29s; --x-offset: 40px;}
+.floating-icons img:nth-child(12) { left: 50%;  width: 70px; animation-delay: 0.5s;animation-duration: 20s; --x-offset: -20px;}
+.floating-icons img:nth-child(13) { left: 20%;  width: 50px; animation-delay: 9s;  animation-duration: 24s; --x-offset: 60px;}
+.floating-icons img:nth-child(14) { left: 85%;  width: 90px; animation-delay: 11s; animation-duration: 18s; --x-offset: -80px;}
+.floating-icons img:nth-child(15) { left: 45%;  width: 40px; animation-delay: 14s; animation-duration: 27s; --x-offset: 10px;}
+.floating-icons img:nth-child(16) { left: 65%;  width: 75px; animation-delay: 13s; animation-duration: 21s; --x-offset: -45px;}
+.floating-icons img:nth-child(17) { left: 2%;   width: 60px; animation-delay: 16s; animation-duration: 25s; --x-offset: 55px;}
+.floating-icons img:nth-child(18) { left: 35%;  width: 80px; animation-delay: 15s; animation-duration: 19s; --x-offset: -35px;}
+.floating-icons img:nth-child(19) { left: 55%;  width: 45px; animation-delay: 18s; animation-duration: 28s; --x-offset: 25px;}
+.floating-icons img:nth-child(20) { left: 95%;  width: 65px; animation-delay: 17s; animation-duration: 20s; --x-offset: -75px;}
+.floating-icons img:nth-child(21) { left: 12%;  width: 70px; animation-delay: 19s; animation-duration: 22s; --x-offset: 65px;}
+.floating-icons img:nth-child(22) { left: 28%;  width: 50px; animation-delay: 21s; animation-duration: 26s; --x-offset: -25px;}
+.floating-icons img:nth-child(23) { left: 48%;  width: 85px; animation-delay: 20s; animation-duration: 17s; --x-offset: 75px;}
+.floating-icons img:nth-child(24) { left: 68%;  width: 40px; animation-delay: 23s; animation-duration: 29s; --x-offset: -85px;}
+.floating-icons img:nth-child(25) { left: 88%;  width: 75px; animation-delay: 22s; animation-duration: 20s; --x-offset: 15px;}
+.floating-icons img:nth-child(26) { left: 8%;   width: 55px; animation-delay: 25s; animation-duration: 24s; --x-offset: -15px;}
+.floating-icons img:nth-child(27) { left: 22%;  width: 90px; animation-delay: 24s; animation-duration: 19s; --x-offset: 45px;}
+.floating-icons img:nth-child(28) { left: 42%;  width: 45px; animation-delay: 27s; animation-duration: 27s; --x-offset: -65px;}
+.floating-icons img:nth-child(29) { left: 62%;  width: 80px; animation-delay: 26s; animation-duration: 21s; --x-offset: 35px;}
+.floating-icons img:nth-child(30) { left: 78%;  width: 50px; animation-delay: 29s; animation-duration: 25s; --x-offset: -55px;}
+.floating-icons img:nth-child(31) { left: 92%;  width: 70px; animation-delay: 28s; animation-duration: 23s; --x-offset: 20px;}
+.floating-icons img:nth-child(32) { left: 3%;   width: 40px; animation-delay: 30s; animation-duration: 28s; --x-offset: -10px;}
 
 
 @keyframes glow {
@@ -39,7 +76,40 @@ header, footer {
     margin-bottom: 50px;
 }
 
-/* --- Main App Component Styles (بدون الخلفية) --- */
+/* تنسيق عام لأزرار التطبيق الرئيسي */
+.main-app-container .stButton>button {
+    border-radius: 50px;
+    background-image: linear-gradient(to right, #007bff, #0056b3);
+    color: white;
+    font-weight: bold;
+    border: none;
+    transition: all 0.3s ease-in-out;
+}
+.main-app-container .stButton>button:hover {
+    background-image: linear-gradient(to right, #0056b3, #007bff);
+    transform: scale(1.03);
+}
+
+/* تنسيق خاص بزر الإطلاق في الصفحة الترحيبية */
+.welcome-page-container .stButton>button:nth-of-type(1) {
+    border: 2px solid #007bff;
+    border-radius: 50px;
+    padding: 15px 40px;
+    font-size: 1.3rem;
+    color: white;
+    background: transparent;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 15px #007bff;
+    position: relative;
+    z-index: 2;
+}
+.welcome-page-container .stButton>button:nth-of-type(1):hover {
+    background: #007bff;
+    box-shadow: 0 0 25px #007bff, 0 0 50px #007bff;
+    transform: scale(1.05);
+}
+
+/* --- Main App Component Styles --- */
 .custom-card { background-color: #1e1e1e; border-radius: 10px; padding: 15px; text-align: center; margin: 10px 0; border: 1px solid #333; height: 100%; }
 .card-header { font-size: 14px; color: #bbb; margin-bottom: 5px; }
 .card-value { font-size: 24px; font-weight: bold; color: white; }
@@ -52,8 +122,6 @@ header, footer {
 .reason-card.bearish { border-color: #dc3545; }
 .reason-card.neutral { border-color: #ffc107; }
 .reason-text { font-size: 18px; color: white; }
-.stButton>button { border-radius: 50px; background-image: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; border: none; }
-.stButton>button:hover { background-image: linear-gradient(to right, #0056b3, #007bff); transform: scale(1.03); }
 .stMetric { background-color: #1e1e1e; border-radius: 10px; padding: 10px; text-align: center; }
 .stMetric > label[data-testid="stMetricLabel"] { color: #bbb; }
 .stMetric > div[data-testid="stMetricValue"] { color: white; }
@@ -62,21 +130,3 @@ header, footer {
 .trade-plan-item-header { font-size: 15px; color: #bbb; margin-bottom: 8px; }
 .trade-plan-item-value { font-size: 22px; font-weight: bold; color: white; word-wrap: break-word; }
 .trade-plan-item-sub-value { font-size: 14px; margin-top: 5px; min-height: 20px; }
-
-/* تنسيق خاص بزر الإطلاق في الصفحة الترحيبية */
-.stButton>button:nth-of-type(1) {
-    border: 2px solid #007bff;
-    padding: 15px 40px;
-    font-size: 1.3rem;
-    color: white;
-    background: transparent;
-    box-shadow: 0 0 15px #007bff;
-    position: relative;
-    z-index: 2;
-}
-
-.stButton>button:nth-of-type(1):hover {
-    background: #007bff;
-    box-shadow: 0 0 25px #007bff, 0 0 50px #007bff;
-    transform: scale(1.05);
-}
