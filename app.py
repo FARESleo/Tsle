@@ -57,12 +57,15 @@ if st.session_state.get("authentication_status"):
             }
         )
     
-    # التعامل مع اختيار المستخدم
+    # --- التعامل مع اختيار المستخدم (النسخة المُعدّلة) ---
     if selected_option == "تسجيل الخروج":
-        authenticator.logout('تسجيل الخروج', 'main')
-        st.rerun()
+        # نقوم بتسجيل الخروج مباشرة عبر إعادة تعيين حالة المصادقة
+        st.session_state['authentication_status'] = None
+        st.session_state['name'] = None
+        st.session_state['username'] = None
+        st.rerun() # إعادة تشغيل التطبيق للعودة إلى الصفحة الترحيبية
+        
     elif selected_option == "ملفي الشخصي":
-        # --- هذا هو السطر الذي تمت إعادته ---
         st.toast("سيتم إضافة صفحة الملف الشخصي قريبًا!", icon="⏳")
 
     # عرض التطبيق الرئيسي
