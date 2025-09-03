@@ -15,10 +15,11 @@ password_input = st.text_input("أدخل كلمة المرور التي تريد
 if st.button("تشفير", use_container_width=True):
     if password_input:
         try:
-            # الطريقة الصحيحة لتشفير كلمة مرور واحدة
-            hashed_password = stauth.Hasher(password_input).generate()
+            # الطريقة الصحيحة: تمرير كلمة المرور داخل قائمة
+            hashed_passwords = stauth.Hasher([password_input]).generate()
             st.success("تم التشفير بنجاح!")
-            st.code(hashed_password, language=None)
+            # عرض أول عنصر في القائمة الناتجة
+            st.code(hashed_passwords[0], language=None)
             st.info("انسخ هذا النص المشفر بالكامل واستخدمه في ملف config.yaml")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
